@@ -135,7 +135,7 @@ export default class LadybugMover {
     const dx = LadyBugConstants.CIRCLE_RADIUS - distanceFromCenter;
     const speed = LadyBugConstants.CIRCLE_SPEED;
 
-    if (distanceFromRing > speed + 1e-6) {
+    if (distanceFromRing > speed + LadyBugConstants.CIRCULAR_RING_TOLERANCE) {
       // Move toward the ring.
       const velocity = new Vector2(speed, 0).rotated(position.angle).timesScalar(dx < 0 ? -1 : 1);
       context.startSampling();
@@ -143,9 +143,11 @@ export default class LadybugMover {
       context.updatePositionMode(dt);
     } else {
       // We are on the ring; advance around it.
+      // deltaTheta is negative (clockwise); derived from CIRCULAR_ANGULAR_RATE × dt.
+      // See LadyBugConstants.CIRCULAR_ANGULAR_RATE for the calibration rationale.
       const angle = position.angle;
       const r = LadyBugConstants.CIRCLE_RADIUS;
-      const deltaTheta = (-Math.PI / 64) * 1.3 * dt * 30 * 0.7 * 2 * 0.85 * 0.4;
+      const deltaTheta = -LadyBugConstants.CIRCULAR_ANGULAR_RATE * dt;
       const n = Math.floor((Math.PI * 2) / deltaTheta);
       const newAngle = angle + (2 * Math.PI) / n;
 
@@ -168,7 +170,10 @@ export default class LadybugMover {
     const a = LadyBugConstants.ELLIPSE_A;
     const b = LadyBugConstants.ELLIPSE_B;
 
-    const n = ((79 * dt) / 0.015) * 0.7 * 5;
+    // Advance the parametric angle by 2π / n per step, where n is the total number of
+    // steps per revolution. See LadyBugConstants.ELLIPTICAL_STEPS_PER_SECOND for the
+    // calibration rationale behind the factor.
+    const n = LadyBugConstants.ELLIPTICAL_STEPS_PER_SECOND * dt;
     this.elapsedEllipticalTime += (2 * Math.PI) / Math.floor(n);
     const t = this.elapsedEllipticalTime;
 

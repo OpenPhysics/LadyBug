@@ -13,6 +13,16 @@ import LadyBugColors from "../../LadyBugColors.js";
 import LadyBugConstants from "../model/LadyBugConstants.js";
 import type { LadyBugModel } from "../model/LadyBugModel.js";
 
+// In "dots" mode only every Nth history sample is rendered; this keeps the dots
+// visually sparse and reduces per-frame canvas work at high recording rates.
+const DOT_HISTORY_STRIDE = 4;
+
+// Radius (px) of each dot in "dots" trace mode.
+const DOT_RADIUS = 2;
+
+// Stroke width (px) used when drawing the trace as a continuous line.
+const LINE_STROKE_WIDTH = 3;
+
 export default class LadybugTraceNode extends CanvasNode {
   private readonly model: LadyBugModel;
   private readonly modelViewTransform: ModelViewTransform2;
@@ -59,7 +69,7 @@ export default class LadybugTraceNode extends CanvasNode {
 
     if (mode === "dots") {
       context.fillStyle = colorCss;
-      for (let i = 0; i < history.length; i += 4) {
+      for (let i = 0; i < history.length; i += DOT_HISTORY_STRIDE) {
         const state = history[i];
         if (!state) {
           continue;
@@ -67,12 +77,12 @@ export default class LadybugTraceNode extends CanvasNode {
         const point = mvt.modelToViewPosition(state.position);
         context.globalAlpha = this.opacityForState(time, state.time);
         context.beginPath();
-        context.arc(point.x, point.y, 2, 0, 2 * Math.PI);
+        context.arc(point.x, point.y, DOT_RADIUS, 0, 2 * Math.PI);
         context.fill();
       }
     } else {
       context.strokeStyle = colorCss;
-      context.lineWidth = 3;
+      context.lineWidth = LINE_STROKE_WIDTH;
       context.lineCap = "round";
       for (let i = 1; i < history.length; i++) {
         const a = history[i - 1];

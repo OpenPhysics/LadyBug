@@ -4,6 +4,9 @@
  * The ladybug, drawn with vector shapes (themeable via LadyBugColors). Shows closed
  * or open wings depending on speed, points in its direction of motion, and can be
  * dragged to steer the simulation.
+ *
+ * All geometry constants below are in model (cm) units. The node is scaled to view
+ * pixels by the model-view transform and then rotated to the ladybug's heading angle.
  */
 
 import { Shape } from "scenerystack/kite";
@@ -15,12 +18,81 @@ import type { LadyBugModel } from "../model/LadyBugModel.js";
 import { MotionType } from "../model/MotionType.js";
 import { UpdateMode } from "../model/UpdateMode.js";
 
-// Spot centers (cm) for one side of the body; mirrored to the other side.
+// Spot centres (cm) on one side of the body; mirrored to the other side.
 const SPOT_POSITIONS: ReadonlyArray<readonly [number, number]> = [
   [0.09, -0.05],
   [0.11, 0.1],
   [0.06, 0.22],
 ];
+
+// ── Closed-wing geometry ──────────────────────────────────────────────────────
+
+// Half-width and half-height (cm) of the body ellipse when wings are closed.
+const BODY_RX = 0.2;
+const BODY_RY = 0.3;
+
+// Y-coordinates (cm) of the top and bottom of the wing-seam dividing line.
+const WING_SEAM_TOP_Y = -0.12;
+const WING_SEAM_BOTTOM_Y = 0.3; // matches BODY_RY so seam spans the full body
+
+// Stroke width (cm) of the wing-seam centre line.
+const WING_SEAM_STROKE_WIDTH = 0.03;
+
+// Radius (cm) of the spots on the closed body.
+const CLOSED_SPOT_RADIUS = 0.05;
+
+// ── Open-wing geometry ────────────────────────────────────────────────────────
+
+// Y-offset (cm) of the exposed back ellipse when wings are open
+// (shifted slightly downward to reveal the abdomen between the wings).
+const BACK_OFFSET_Y = 0.02;
+
+// Half-width and half-height (cm) of the exposed-back ellipse visible between open wings.
+const BACK_RX = 0.18;
+const BACK_RY = 0.3;
+
+// Half-width and half-height (cm) of each open wing ellipse.
+const OPEN_WING_RX = 0.15;
+const OPEN_WING_RY = 0.28;
+
+// Rotation angle (radians, ≈ 18.3°) each wing is tilted away from the body centreline.
+const WING_ROTATION = 0.32;
+
+// Horizontal and vertical offset (cm) applied after rotation to spread each wing.
+const WING_OFFSET_X = 0.11;
+const WING_OFFSET_Y = 0.02;
+
+// Radius (cm) of the spots painted on each open wing.
+const OPEN_SPOT_RADIUS = 0.045;
+
+// Fraction of the SPOT_POSITIONS x-coordinate used to position spots on the open wings,
+// accounting for the wings being rotated and translated away from the body centre.
+const OPEN_SPOT_X_SCALE = 0.5;
+
+// ── Head geometry ─────────────────────────────────────────────────────────────
+
+// Centre Y-coordinate (cm) of the head ellipse (negative → above the body).
+const HEAD_CY = -0.27;
+
+// Half-width and half-height (cm) of the head ellipse.
+const HEAD_RX = 0.16;
+const HEAD_RY = 0.13;
+
+// ── Antennae geometry ─────────────────────────────────────────────────────────
+
+// X and Y coordinates (cm) where each antenna meets the head.
+const ANTENNA_BASE_X = 0.05;
+const ANTENNA_BASE_Y = -0.34;
+
+// X and Y coordinates (cm) of the tip of each antenna.
+const ANTENNA_TIP_X = 0.14;
+const ANTENNA_TIP_Y = -0.5;
+
+// Stroke width (cm) of the antenna lines.
+const ANTENNA_STROKE_WIDTH = 0.025;
+
+// Radius (cm) of the small ball at the tip of each antenna.
+const ANTENNA_TIP_RADIUS = 0.035;
 
 export default class LadybugNode extends Node {
   public constructor(model: LadyBugModel, modelViewTransform: ModelViewTransform2) {
@@ -44,6 +116,8 @@ export default class LadybugNode extends Node {
       this.translation = modelViewTransform.modelToViewPosition(position);
     });
     ladybug.angleProperty.link((angle) => {
+      // +π/2 rotates the bug so that its "up" direction (−y in model) aligns
+      // with the positive-x world axis before the heading rotation is applied.
       bug.rotation = angle + Math.PI / 2;
     });
     ladybug.velocityProperty.link((velocity) => {
@@ -82,11 +156,16 @@ export default class LadybugNode extends Node {
 
   private static createClosedWings(): Node {
     const node = new Node();
-    node.addChild(LadybugNode.ellipse(0, 0, 0.2, 0.3, LadyBugColors.ladybugBodyProperty));
-    node.addChild(new Line(0, -0.12, 0, 0.3, { stroke: LadyBugColors.ladybugWingSeamProperty, lineWidth: 0.03 }));
+    node.addChild(LadybugNode.ellipse(0, 0, BODY_RX, BODY_RY, LadyBugColors.ladybugBodyProperty));
+    node.addChild(
+      new Line(0, WING_SEAM_TOP_Y, 0, WING_SEAM_BOTTOM_Y, {
+        stroke: LadyBugColors.ladybugWingSeamProperty,
+        lineWidth: WING_SEAM_STROKE_WIDTH,
+      }),
+    );
     for (const [x, y] of SPOT_POSITIONS) {
-      node.addChild(new Circle(0.05, { fill: LadyBugColors.ladybugSpotsProperty, x, y }));
-      node.addChild(new Circle(0.05, { fill: LadyBugColors.ladybugSpotsProperty, x: -x, y }));
+      node.addChild(new Circle(CLOSED_SPOT_RADIUS, { fill: LadyBugColors.ladybugSpotsProperty, x, y }));
+      node.addChild(new Circle(CLOSED_SPOT_RADIUS, { fill: LadyBugColors.ladybugSpotsProperty, x: -x, y }));
     }
     return node;
   }
@@ -94,18 +173,22 @@ export default class LadybugNode extends Node {
   private static createOpenWings(): Node {
     const node = new Node({ visible: false });
     // The exposed back, revealed between the spread wings.
-    node.addChild(LadybugNode.ellipse(0, 0.02, 0.18, 0.3, LadyBugColors.ladybugHeadProperty));
+    node.addChild(LadybugNode.ellipse(0, BACK_OFFSET_Y, BACK_RX, BACK_RY, LadyBugColors.ladybugHeadProperty));
 
-    const leftWing = LadybugNode.ellipse(0, 0, 0.15, 0.28, LadyBugColors.ladybugBodyProperty);
-    leftWing.rotation = 0.32;
-    leftWing.translation = leftWing.translation.plusXY(-0.11, 0.02);
-    const rightWing = LadybugNode.ellipse(0, 0, 0.15, 0.28, LadyBugColors.ladybugBodyProperty);
-    rightWing.rotation = -0.32;
-    rightWing.translation = rightWing.translation.plusXY(0.11, 0.02);
+    const leftWing = LadybugNode.ellipse(0, 0, OPEN_WING_RX, OPEN_WING_RY, LadyBugColors.ladybugBodyProperty);
+    leftWing.rotation = WING_ROTATION;
+    leftWing.translation = leftWing.translation.plusXY(-WING_OFFSET_X, WING_OFFSET_Y);
+    const rightWing = LadybugNode.ellipse(0, 0, OPEN_WING_RX, OPEN_WING_RY, LadyBugColors.ladybugBodyProperty);
+    rightWing.rotation = -WING_ROTATION;
+    rightWing.translation = rightWing.translation.plusXY(WING_OFFSET_X, WING_OFFSET_Y);
 
     for (const [x, y] of SPOT_POSITIONS) {
-      leftWing.addChild(new Circle(0.045, { fill: LadyBugColors.ladybugSpotsProperty, x: -Math.abs(x) * 0.5, y }));
-      rightWing.addChild(new Circle(0.045, { fill: LadyBugColors.ladybugSpotsProperty, x: Math.abs(x) * 0.5, y }));
+      leftWing.addChild(
+        new Circle(OPEN_SPOT_RADIUS, { fill: LadyBugColors.ladybugSpotsProperty, x: -Math.abs(x) * OPEN_SPOT_X_SCALE, y }),
+      );
+      rightWing.addChild(
+        new Circle(OPEN_SPOT_RADIUS, { fill: LadyBugColors.ladybugSpotsProperty, x: Math.abs(x) * OPEN_SPOT_X_SCALE, y }),
+      );
     }
     node.addChild(leftWing);
     node.addChild(rightWing);
@@ -113,16 +196,26 @@ export default class LadybugNode extends Node {
   }
 
   private static createHead(): Node {
-    return LadybugNode.ellipse(0, -0.27, 0.16, 0.13, LadyBugColors.ladybugHeadProperty);
+    return LadybugNode.ellipse(0, HEAD_CY, HEAD_RX, HEAD_RY, LadyBugColors.ladybugHeadProperty);
   }
 
   private static createAntennae(): Node {
     const node = new Node();
     const stroke = LadyBugColors.ladybugAntennaeProperty;
-    node.addChild(new Line(-0.05, -0.34, -0.14, -0.5, { stroke, lineWidth: 0.025 }));
-    node.addChild(new Line(0.05, -0.34, 0.14, -0.5, { stroke, lineWidth: 0.025 }));
-    node.addChild(new Circle(0.035, { fill: stroke, x: -0.14, y: -0.5 }));
-    node.addChild(new Circle(0.035, { fill: stroke, x: 0.14, y: -0.5 }));
+    node.addChild(
+      new Line(-ANTENNA_BASE_X, ANTENNA_BASE_Y, -ANTENNA_TIP_X, ANTENNA_TIP_Y, {
+        stroke,
+        lineWidth: ANTENNA_STROKE_WIDTH,
+      }),
+    );
+    node.addChild(
+      new Line(ANTENNA_BASE_X, ANTENNA_BASE_Y, ANTENNA_TIP_X, ANTENNA_TIP_Y, {
+        stroke,
+        lineWidth: ANTENNA_STROKE_WIDTH,
+      }),
+    );
+    node.addChild(new Circle(ANTENNA_TIP_RADIUS, { fill: stroke, x: -ANTENNA_TIP_X, y: ANTENNA_TIP_Y }));
+    node.addChild(new Circle(ANTENNA_TIP_RADIUS, { fill: stroke, x: ANTENNA_TIP_X, y: ANTENNA_TIP_Y }));
     return node;
   }
 }

@@ -157,8 +157,9 @@ export class LadyBugModel implements TModel, MoverContext {
 
       // Fudge factors (from PhET) that put the model v and a on the right scale for
       // the fixed timestep. With deltaTime = FIXED_DT these are constant.
-      const vscale = 1 / deltaTime / 10;
-      const ascale = vscale * vscale * 3.835;
+      // See LadyBugConstants for the rationale behind each scaling factor.
+      const vscale = 1 / deltaTime / LadyBugConstants.POSITION_MODE_V_SCALE_FACTOR;
+      const ascale = vscale * vscale * LadyBugConstants.POSITION_MODE_A_SCALE_FACTOR;
       this.ladybug.setVelocity(this.samplingMotionModel.getVelocity().timesScalar(vscale));
       this.ladybug.setAcceleration(this.samplingMotionModel.getAcceleration().timesScalar(ascale));
     } else {
@@ -391,7 +392,8 @@ export class LadyBugModel implements TModel, MoverContext {
 
   private pointInDirectionOfMotion(): void {
     const velocity = this.estimateVelocity();
-    if (velocity.magnitude > 1e-6) {
+    // Only rotate when speed is non-trivial; see LadyBugConstants.MIN_HEADING_VELOCITY.
+    if (velocity.magnitude > LadyBugConstants.MIN_HEADING_VELOCITY) {
       this.ladybug.setAngle(velocity.angle);
     }
   }
