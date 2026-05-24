@@ -15,8 +15,34 @@ import LadyBugColors from "../../LadyBugColors.js";
 import type { LadyBugModel, TraceMode } from "../model/LadyBugModel.js";
 import { MotionType } from "../model/MotionType.js";
 
-const TITLE_FONT = new PhetFont({ size: 16, weight: "bold" });
-const LABEL_FONT = new PhetFont(14);
+// Point size for section-title text (e.g. "Vectors", "Motion", "Trace").
+const TITLE_FONT_SIZE = 16;
+const TITLE_FONT = new PhetFont({ size: TITLE_FONT_SIZE, weight: "bold" });
+
+// Point size for option-label text (checkbox labels, radio-button labels).
+const LABEL_FONT_SIZE = 14;
+const LABEL_FONT = new PhetFont(LABEL_FONT_SIZE);
+
+// Pixel gap between the two vector-visibility checkboxes.
+const CHECKBOX_SPACING = 8;
+
+// Radius (px) of the radio-button circles used in motion and trace groups.
+const RADIO_BUTTON_RADIUS = 8;
+
+// Pixel gap between individual radio buttons within each group.
+const RADIO_BUTTON_SPACING = 6;
+
+// Pixel gap between sections (title + control group pairs) in the main VBox.
+const VBOX_SPACING = 8;
+
+// Corner radius (px) of the outer Panel container.
+const PANEL_CORNER_RADIUS = 6;
+
+// Horizontal padding (px) inside the outer Panel.
+const PANEL_X_MARGIN = 12;
+
+// Vertical padding (px) inside the outer Panel.
+const PANEL_Y_MARGIN = 10;
 
 function titleText(stringProperty: TReadOnlyProperty<string>): Node {
   return new Text(stringProperty, { font: TITLE_FONT, fill: LadyBugColors.foregroundColorProperty });
@@ -42,7 +68,7 @@ export default class VectorsControlPanel extends Panel {
         },
       ],
       {
-        spacing: 8,
+        spacing: CHECKBOX_SPACING,
         checkboxOptions: {
           checkboxColor: LadyBugColors.foregroundColorProperty,
           checkboxColorBackground: LadyBugColors.backgroundColorProperty,
@@ -50,7 +76,7 @@ export default class VectorsControlPanel extends Panel {
       },
     );
 
-    const radioButtonOptions = { radius: 8, stroke: LadyBugColors.foregroundColorProperty };
+    const radioButtonOptions = { radius: RADIO_BUTTON_RADIUS, stroke: LadyBugColors.foregroundColorProperty };
 
     const motionRadioGroup = new AquaRadioButtonGroup(
       model.motionTypeProperty,
@@ -60,7 +86,7 @@ export default class VectorsControlPanel extends Panel {
         { value: MotionType.CIRCULAR, createNode: () => labelText(motion.circularStringProperty) },
         { value: MotionType.ELLIPTICAL, createNode: () => labelText(motion.ellipticalStringProperty) },
       ],
-      { spacing: 6, radioButtonOptions },
+      { spacing: RADIO_BUTTON_SPACING, radioButtonOptions },
     );
 
     const traceRadioGroup = new AquaRadioButtonGroup<TraceMode>(
@@ -70,12 +96,12 @@ export default class VectorsControlPanel extends Panel {
         { value: "dots", createNode: () => labelText(trace.dotsStringProperty) },
         { value: "off", createNode: () => labelText(trace.offStringProperty) },
       ],
-      { spacing: 6, radioButtonOptions },
+      { spacing: RADIO_BUTTON_SPACING, radioButtonOptions },
     );
 
     const content = new VBox({
       align: "left",
-      spacing: 8,
+      spacing: VBOX_SPACING,
       children: [
         titleText(vectors.titleStringProperty),
         checkboxGroup,
@@ -89,9 +115,9 @@ export default class VectorsControlPanel extends Panel {
     super(content, {
       fill: LadyBugColors.panelFillProperty,
       stroke: LadyBugColors.panelStrokeProperty,
-      cornerRadius: 6,
-      xMargin: 12,
-      yMargin: 10,
+      cornerRadius: PANEL_CORNER_RADIUS,
+      xMargin: PANEL_X_MARGIN,
+      yMargin: PANEL_Y_MARGIN,
       align: "left",
     });
   }

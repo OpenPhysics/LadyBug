@@ -18,8 +18,14 @@ import VectorsControlPanel from "./VectorsControlPanel.js";
 
 type LadyBugScreenViewOptions = ScreenViewOptions & { tandem: Tandem };
 
+// Pixel margin around the play area and between all adjacent UI elements.
 const MARGIN = 12;
+
+// Pixel height reserved below the play area for the seek bar and playback controls.
 const BOTTOM_CONTROLS_HEIGHT = 100;
+
+// Point size for the "Return Ladybug" button label.
+const RETURN_BUTTON_FONT_SIZE = 16;
 
 /**
  * LadyBugScreenView
@@ -71,7 +77,7 @@ export class LadyBugScreenView extends ScreenView {
     const vectorsNode = new LadybugVectorsNode(model, modelViewTransform);
 
     const returnButton = new TextPushButton(StringManager.getInstance().getReturnLadybugStringProperty(), {
-      font: new PhetFont(16),
+      font: new PhetFont(RETURN_BUTTON_FONT_SIZE),
       baseColor: "#f6e652",
       visibleProperty: new DerivedProperty([model.ladybug.positionProperty], () => model.ladybugOutOfBounds()),
       listener: () => model.returnLadybug(),
@@ -101,7 +107,8 @@ export class LadyBugScreenView extends ScreenView {
     returnButton.top = MARGIN;
 
     seekBar.centerX = playAreaCenterX;
-    seekBar.bottom = layoutBounds.maxY - BOTTOM_CONTROLS_HEIGHT + 12;
+    // Place the seek bar at the top of the bottom-controls band, offset by one MARGIN.
+    seekBar.bottom = layoutBounds.maxY - BOTTOM_CONTROLS_HEIGHT + MARGIN;
     playbackControls.centerX = playAreaCenterX;
     playbackControls.bottom = layoutBounds.maxY - MARGIN;
 

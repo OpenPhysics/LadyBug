@@ -48,6 +48,45 @@ const LadyBugConstants = {
 
   // Remote-control pad: side length of the square drag area, in view pixels.
   REMOTE_PAD_SIZE: 166,
+
+  // ── Manual (position-mode) velocity / acceleration fudge factors ─────────────
+  //
+  // These were tuned empirically in the original Java PhET simulation so that the
+  // sampled position window produces v and a values that "feel right" when displayed
+  // as on-screen vectors. Because updatePositionMode() always runs with
+  // deltaTime = FIXED_DT, both factors collapse to fixed dimensionless multipliers.
+  //
+  //   vscale = 1 / deltaTime / POSITION_MODE_V_SCALE_FACTOR
+  //   ascale = vscale² × POSITION_MODE_A_SCALE_FACTOR
+  POSITION_MODE_V_SCALE_FACTOR: 10, // denominates 1/dt to calibrate velocity units
+  POSITION_MODE_A_SCALE_FACTOR: 3.835, // calibrates vscale² to produce the acceleration scale
+
+  // Minimum speed (cm/s) required to update the ladybug's heading angle.
+  // Below this threshold the heading holds steady to prevent jitter when nearly stopped.
+  MIN_HEADING_VELOCITY: 1e-6,
+
+  // ── Circular-motion preset ───────────────────────────────────────────────────
+  //
+  // CIRCULAR_ANGULAR_RATE (rad/s): calibrated angular speed around the ring.
+  // Derived from the original Java values:
+  //   (π/64) × 1.3 × 30 × 0.7 × 2 × 0.85 × 0.4
+  // where 30 is the reference frame rate (fps), π/64 is the base angular step per
+  // frame at that rate, and the remaining five factors are empirical tuning constants.
+  // The sign is positive; code negates it to produce clockwise (decreasing-angle) motion.
+  CIRCULAR_ANGULAR_RATE: (Math.PI / 64) * 1.3 * 30 * 0.7 * 2 * 0.85 * 0.4,
+
+  // Distance tolerance (cm) for deciding whether the ladybug has reached the ring.
+  CIRCULAR_RING_TOLERANCE: 1e-6,
+
+  // ── Elliptical-motion preset ─────────────────────────────────────────────────
+  //
+  // ELLIPTICAL_STEPS_PER_SECOND: number of parametric steps per second of simulation time.
+  // Derived from the original Java values:
+  //   (79 / 0.015) × 0.7 × 5
+  // where 0.015 s is the reference timestep the constant 79 was tuned against, and
+  // 0.7 × 5 are empirical speed-scale factors from the original simulation.
+  // Usage: n = floor(ELLIPTICAL_STEPS_PER_SECOND × dt);  t += 2π / n  per fixed step.
+  ELLIPTICAL_STEPS_PER_SECOND: (79 / 0.015) * 0.7 * 5,
 } as const;
 
 export default LadyBugConstants;

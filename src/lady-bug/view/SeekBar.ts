@@ -10,7 +10,21 @@ import { DragListener, Node, Rectangle } from "scenerystack/scenery";
 import LadyBugColors from "../../LadyBugColors.js";
 import type { LadyBugModel } from "../model/LadyBugModel.js";
 
+// Height (px) of the seek-bar track and progress fill.
 const BAR_HEIGHT = 10;
+
+// Width (px) of the draggable seek handle rectangle.
+const HANDLE_WIDTH = 12;
+
+// Amount (px) the handle extends above and below the bar on each side,
+// making it easier to grab while staying visually centered on the track.
+const HANDLE_OVERHANG = 5;
+
+// Corner radius (px) of the seek handle rectangle.
+const HANDLE_CORNER_RADIUS = 3;
+
+// Semi-transparent border rendered around the seek handle for visual separation.
+const HANDLE_STROKE = "rgba(0,0,0,0.4)";
 
 export default class SeekBar extends Node {
   public constructor(model: LadyBugModel, width: number) {
@@ -24,10 +38,10 @@ export default class SeekBar extends Node {
       fill: LadyBugColors.seekBarProgressProperty,
       cornerRadius: BAR_HEIGHT / 2,
     });
-    const handle = new Rectangle(-6, -5, 12, BAR_HEIGHT + 10, {
+    const handle = new Rectangle(-HANDLE_WIDTH / 2, -HANDLE_OVERHANG, HANDLE_WIDTH, BAR_HEIGHT + 2 * HANDLE_OVERHANG, {
       fill: LadyBugColors.seekBarHandleProperty,
-      stroke: "rgba(0,0,0,0.4)",
-      cornerRadius: 3,
+      stroke: HANDLE_STROKE,
+      cornerRadius: HANDLE_CORNER_RADIUS,
       cursor: "pointer",
     });
     this.children = [track, progress, handle];

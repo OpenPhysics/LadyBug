@@ -22,6 +22,56 @@ import { UpdateMode } from "../model/UpdateMode.js";
 const AREA = LadyBugConstants.REMOTE_PAD_SIZE;
 const HALF = AREA / 2;
 
+// ── Typography ────────────────────────────────────────────────────────────────
+
+// Point size of the panel title ("Remote Control").
+const TITLE_FONT_SIZE = 16;
+
+// Point size of the mode-selector tab labels (Position / Velocity / Acceleration).
+const TAB_FONT_SIZE = 13;
+
+// ── Arrow (direction indicator inside the pad) ────────────────────────────────
+//
+// These dimensions intentionally match the vector arrows in LadybugVectorsNode so
+// the direction indicator uses a consistent visual language.
+
+// Width (px) of the arrowhead.
+const ARROW_HEAD_WIDTH = 14;
+
+// Height (px) of the arrowhead.
+const ARROW_HEAD_HEIGHT = 14;
+
+// Width (px) of the arrow shaft.
+const ARROW_TAIL_WIDTH = 5;
+
+// ── Control knob ──────────────────────────────────────────────────────────────
+
+// Radius (px) of the draggable knob that sits at the arrow tip.
+const KNOB_RADIUS = 9;
+
+// Semi-transparent border on the knob for visual separation from the pad background.
+const KNOB_STROKE = "rgba(0,0,0,0.4)";
+
+// ── Layout & panel styling ────────────────────────────────────────────────────
+
+// Pixel gap between the mode-selector tab buttons.
+const TAB_SPACING = 4;
+
+// Corner radius (px) of the drag-pad background rectangle.
+const PAD_CORNER_RADIUS = 4;
+
+// Corner radius (px) of the outer Panel container.
+const PANEL_CORNER_RADIUS = 6;
+
+// Horizontal padding (px) inside the outer Panel.
+const PANEL_X_MARGIN = 12;
+
+// Vertical padding (px) inside the outer Panel.
+const PANEL_Y_MARGIN = 10;
+
+// Vertical spacing (px) between the title, tab row, and pad inside the VBox.
+const VBOX_SPACING = 8;
+
 const COLOR_BY_MODE = {
   [UpdateMode.POSITION]: LadyBugColors.positionVectorProperty,
   [UpdateMode.VELOCITY]: LadyBugColors.velocityVectorProperty,
@@ -36,8 +86,8 @@ export default class RemoteControlPanel extends Panel {
     const remote = strings.getRemoteControlStrings();
     const selectedModeProperty = new Property<UpdateMode>(UpdateMode.POSITION);
 
-    const titleFont = new PhetFont({ size: 16, weight: "bold" });
-    const tabFont = new PhetFont(13);
+    const titleFont = new PhetFont({ size: TITLE_FONT_SIZE, weight: "bold" });
+    const tabFont = new PhetFont(TAB_FONT_SIZE);
 
     const header = new Text(remote.titleStringProperty, {
       font: titleFont,
@@ -61,28 +111,33 @@ export default class RemoteControlPanel extends Panel {
             new Text(remote.accelerationStringProperty, { font: tabFont, fill: COLOR_BY_MODE.acceleration }),
         },
       ],
-      { orientation: "horizontal", spacing: 4 },
+      { orientation: "horizontal", spacing: TAB_SPACING },
     );
 
     const padBackground = new Rectangle(-HALF, -HALF, AREA, AREA, {
       fill: LadyBugColors.remotePadFillProperty,
-      cornerRadius: 4,
+      cornerRadius: PAD_CORNER_RADIUS,
     });
-    const arrow = new ArrowNode(0, 0, 0, 0, { headWidth: 14, headHeight: 14, tailWidth: 5, stroke: null });
-    const knob = new Circle(9, { cursor: "pointer", stroke: "rgba(0,0,0,0.4)" });
+    const arrow = new ArrowNode(0, 0, 0, 0, {
+      headWidth: ARROW_HEAD_WIDTH,
+      headHeight: ARROW_HEAD_HEIGHT,
+      tailWidth: ARROW_TAIL_WIDTH,
+      stroke: null,
+    });
+    const knob = new Circle(KNOB_RADIUS, { cursor: "pointer", stroke: KNOB_STROKE });
     const padLayer = new Node({
       clipArea: Shape.bounds(new Bounds2(-HALF, -HALF, HALF, HALF)),
       children: [arrow, knob],
     });
     const pad = new Node({ children: [padBackground, padLayer] });
 
-    const content = new VBox({ spacing: 8, children: [header, tabs, pad] });
+    const content = new VBox({ spacing: VBOX_SPACING, children: [header, tabs, pad] });
     super(content, {
       fill: LadyBugColors.panelFillProperty,
       stroke: LadyBugColors.panelStrokeProperty,
-      cornerRadius: 6,
-      xMargin: 12,
-      yMargin: 10,
+      cornerRadius: PANEL_CORNER_RADIUS,
+      xMargin: PANEL_X_MARGIN,
+      yMargin: PANEL_Y_MARGIN,
     });
 
     this.selectedModeProperty = selectedModeProperty;
