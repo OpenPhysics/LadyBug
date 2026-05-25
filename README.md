@@ -10,7 +10,7 @@ This project is set up as a starting point to get familiar with the SceneryStack
 - **Progressive Web App** (installable, offline-capable) via `vite-plugin-pwa`
 - **GitHub Actions** for linting, building, and deploying to GitHub Pages
 
-It contains a single empty screen (no simulation logic yet), wired up with color profiles
+It contains a single page simulation, wired up with color profiles
 (default / projector) and internationalization (English / French).
 
 ## Prerequisites
