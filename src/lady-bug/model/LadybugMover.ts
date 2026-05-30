@@ -143,13 +143,13 @@ export default class LadybugMover {
       context.updatePositionMode(dt);
     } else {
       // We are on the ring; advance around it.
-      // deltaTheta is negative (clockwise); derived from CIRCULAR_ANGULAR_RATE × dt.
-      // See LadyBugConstants.CIRCULAR_ANGULAR_RATE for the calibration rationale.
+      // Advance clockwise (decreasing angle) by one step; see CIRCULAR_ANGULAR_RATE.
+      // Math.ceil here mirrors floor(2π / -|δ|) = -ceil(2π / |δ|), preserving the
+      // original step size while making the clockwise direction explicit.
       const angle = position.angle;
       const r = LadyBugConstants.CIRCLE_RADIUS;
-      const deltaTheta = -LadyBugConstants.CIRCULAR_ANGULAR_RATE * dt;
-      const n = Math.floor((Math.PI * 2) / deltaTheta);
-      const newAngle = angle + (2 * Math.PI) / n;
+      const stepsPerRevolution = Math.ceil((2 * Math.PI) / (LadyBugConstants.CIRCULAR_ANGULAR_RATE * dt));
+      const newAngle = angle - (2 * Math.PI) / stepsPerRevolution;
 
       context.stopSampling();
 
@@ -174,12 +174,16 @@ export default class LadybugMover {
     // steps per revolution. See LadyBugConstants.ELLIPTICAL_STEPS_PER_SECOND for the
     // calibration rationale behind the factor.
     const n = LadyBugConstants.ELLIPTICAL_STEPS_PER_SECOND * dt;
-    this.elapsedEllipticalTime += (2 * Math.PI) / Math.floor(n);
+    const deltaT = (2 * Math.PI) / Math.floor(n);
+    this.elapsedEllipticalTime += deltaT;
     const t = this.elapsedEllipticalTime;
 
+    // omega (rad/s) converts parametric derivatives to real-time derivatives via the
+    // chain rule: dPos/dt_real = dPos/dt_param × omega, d²Pos/dt_real² = … × omega².
+    const omega = deltaT / dt;
     ladybug.setPositionXY(a * Math.cos(t), b * Math.sin(t));
-    ladybug.setVelocityXY(-a * Math.sin(t), b * Math.cos(t));
-    ladybug.setAccelerationXY(-a * Math.cos(t), -b * Math.sin(t));
+    ladybug.setVelocityXY(-a * Math.sin(t) * omega, b * Math.cos(t) * omega);
+    ladybug.setAccelerationXY(-a * Math.cos(t) * omega * omega, -b * Math.sin(t) * omega * omega);
     ladybug.setAngle(ladybug.velocity.angle);
   }
 }

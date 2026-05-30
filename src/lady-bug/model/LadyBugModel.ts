@@ -22,7 +22,7 @@ import { UpdateMode } from "./UpdateMode.js";
 
 export type TraceMode = "line" | "dots" | "off";
 
-type PenPoint = { time: number; x: number; y: number };
+type PenPoint = { x: number; y: number };
 
 export class LadyBugModel implements TModel, MoverContext {
   public readonly ladybug = new Ladybug();
@@ -115,6 +115,10 @@ export class LadyBugModel implements TModel, MoverContext {
   }
 
   private stepRecording(deltaTime: number): void {
+    if (this.time >= LadyBugConstants.MAX_RECORDING_TIME) {
+      this.recordingProperty.value = false;
+      return;
+    }
     this.mover.update(deltaTime);
     this.recordCurrentPenPoint();
     this.trimSampleHistory();
@@ -204,7 +208,7 @@ export class LadyBugModel implements TModel, MoverContext {
   }
 
   private recordCurrentPenPoint(): void {
-    this.penPath.push({ time: this.time, x: this.penPoint.x, y: this.penPoint.y });
+    this.penPath.push({ x: this.penPoint.x, y: this.penPoint.y });
   }
 
   private getLastSamplePoint(): Vector2 {
@@ -261,7 +265,6 @@ export class LadyBugModel implements TModel, MoverContext {
   }
 
   private prepareForPlayback(): void {
-    this.stateHistory.sort((a, b) => a.time - b.time);
     this.historyTimes = this.stateHistory.map((state) => state.time);
   }
 
@@ -283,15 +286,13 @@ export class LadyBugModel implements TModel, MoverContext {
   }
 
   private clearHistoryAfter(time: number): void {
-    for (let i = this.stateHistory.length - 1; i >= 0; i--) {
-      if ((this.stateHistory[i]?.time ?? 0) >= time) {
-        this.stateHistory.splice(i, 1);
-      }
+    const historyIdx = this.stateHistory.findIndex((s) => s.time >= time);
+    if (historyIdx !== -1) {
+      this.stateHistory.splice(historyIdx);
     }
-    for (let i = this.culledStateHistory.length - 1; i >= 0; i--) {
-      if ((this.culledStateHistory[i]?.time ?? 0) >= time) {
-        this.culledStateHistory.splice(i, 1);
-      }
+    const culledIdx = this.culledStateHistory.findIndex((s) => s.time >= time);
+    if (culledIdx !== -1) {
+      this.culledStateHistory.splice(culledIdx);
     }
     this.historyTimes = null;
     this.furthestRecordedTimeProperty.value = time;
@@ -374,14 +375,13 @@ export class LadyBugModel implements TModel, MoverContext {
   private estimateDerivativeVector(getValue: (state: LadybugStateRecord) => Vector2): Vector2 {
     const size = LadyBugConstants.ESTIMATION_SAMPLE_SIZE;
     const sample = this.stateHistory.slice(Math.max(0, this.stateHistory.length - size));
-    const diff = size - sample.length;
+
+    if (sample.length < 2) {
+      return Vector2.ZERO;
+    }
 
     const xs: TimeValue[] = [];
     const ys: TimeValue[] = [];
-    for (let j = 0; j < diff; j++) {
-      xs.push({ time: 0, value: 0 });
-      ys.push({ time: 0, value: 0 });
-    }
     for (const state of sample) {
       const v = getValue(state);
       xs.push({ time: state.time, value: v.x });
