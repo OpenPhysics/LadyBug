@@ -111,7 +111,11 @@ export default class RemoteControlPanel extends Panel {
             new Text(remote.accelerationStringProperty, { font: tabFont, fill: COLOR_BY_MODE.acceleration }),
         },
       ],
-      { orientation: "horizontal", spacing: TAB_SPACING },
+      {
+        orientation: "horizontal",
+        spacing: TAB_SPACING,
+        radioButtonOptions: { baseColor: LadyBugColors.tabButtonFillProperty },
+      },
     );
 
     const padBackground = new Rectangle(-HALF, -HALF, AREA, AREA, {
