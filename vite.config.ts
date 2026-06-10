@@ -54,7 +54,8 @@ export default defineConfig({
         name: "Lady Bug",
         // biome-ignore lint/style/useNamingConvention: Web App Manifest spec requires snake_case keys
         short_name: "LadyBug",
-        description: "A sceneryStack simulation.",
+        description:
+          "A SceneryStack port of the Ladybug Motion 2D simulation. Explore 2D motion, position, velocity, and acceleration on a rotating platform.",
         // biome-ignore lint/style/useNamingConvention: Web App Manifest spec requires snake_case keys
         theme_color: "#d11f1f",
         // biome-ignore lint/style/useNamingConvention: Web App Manifest spec requires snake_case keys
