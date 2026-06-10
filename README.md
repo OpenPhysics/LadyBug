@@ -5,16 +5,17 @@ motion, position, velocity, and acceleration using a ladybug on a rotating platf
 
 ## Features
 
-- Single-screen simulation with default and projector color profiles
+- Single-screen kinematics simulation on a rotatable platform
+- Drag the ladybug and observe position, velocity, and acceleration vectors
+- Default and projector color profiles
 - English and French localization
-- Progressive Web App (installable, offline-capable) via `vite-plugin-pwa`
-- GitHub Actions CI and GitHub Pages deployment
+- Progressive Web App with GitHub Pages deployment via GitHub Actions
 
 ## Quick Start
 
 ```bash
 npm install
-npm run icons    # generate PWA icons + favicon from public/icons/icon.svg
+npm run icons    # generate PNG icons from public/icons/icon.svg
 npm start        # dev server → http://localhost:5173
 ```
 
@@ -25,35 +26,12 @@ npm start        # dev server → http://localhost:5173
 | `npm start` / `npm run dev` | Start Vite dev server |
 | `npm run build` | Type-check + production build → `dist/` |
 | `npm run preview` | Preview the production build locally |
-| `npm run check` | TypeScript type check (`src` + `scripts`) |
+| `npm run check` | TypeScript type check |
 | `npm run lint` | Biome lint check |
 | `npm run format` | Auto-format all files |
 | `npm run fix` | Lint + auto-fix |
-| `npm run icons` | Regenerate icons from `public/icons/icon.svg` |
+| `npm run icons` | Regenerate PNG icons from `public/icons/icon.svg` |
 | `npm run clean` | Remove `dist/` |
-
-## Project structure
-
-```
-src/
-├── main.ts            Entry point (launches the Sim)
-├── brand.ts           SceneryStack bootstrap chain: init -> assert -> splash -> brand
-├── splash.ts
-├── assert.ts
-├── init.ts
-├── LadyBugNamespace.ts
-├── LadyBugColors.ts   Color profiles (default / projector)
-├── i18n/              StringManager + per-locale JSON (en / fr)
-└── lady-bug/          The Lady Bug screen
-    ├── LadyBugScreen.ts
-    ├── model/LadyBugModel.ts
-    └── view/LadyBugScreenView.ts
-```
-
-## Deployment
-
-Pushing to `main` builds the app and deploys it to GitHub Pages (see `.github/workflows/deploy.yml`).
-Enable Pages with the "GitHub Actions" source in the repository settings.
 
 ## Tech Stack
 
