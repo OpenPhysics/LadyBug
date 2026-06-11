@@ -1,0 +1,36 @@
+{
+  "title": "Mariquita",
+  "screens": {
+    "ladyBug": "Mariquita"
+  },
+  "vectors": {
+    "title": "Vectores",
+    "showVelocity": "Mostrar velocidad",
+    "showAcceleration": "Mostrar aceleración"
+  },
+  "motion": {
+    "title": "Movimiento",
+    "manual": "Manual",
+    "linear": "Lineal",
+    "circular": "Circular",
+    "elliptical": "Elíptico"
+  },
+  "trace": {
+    "title": "Trazado",
+    "line": "Línea",
+    "dots": "Puntos",
+    "off": "Desactivado"
+  },
+  "remoteControl": {
+    "title": "Control remoto",
+    "position": "Posición",
+    "velocity": "Velocidad",
+    "acceleration": "Aceleración"
+  },
+  "playback": {
+    "record": "Grabar",
+    "playback": "Reproducción",
+    "clear": "Borrar"
+  },
+  "returnLadybug": "Devolver mariquita"
+}
