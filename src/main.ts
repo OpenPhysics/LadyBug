@@ -19,7 +19,6 @@ import { onReadyToLaunch, PreferencesModel, Sim } from "scenerystack/sim";
 import { Tandem } from "scenerystack/tandem";
 import { StringManager } from "./i18n/StringManager.js";
 import LadyBugColors from "./LadyBugColors.js";
-import ladyBug from "./LadyBugNamespace.js";
 import { LadyBugScreen } from "./lady-bug/LadyBugScreen.js";
 
 onReadyToLaunch(() => {
@@ -57,6 +56,5 @@ onReadyToLaunch(() => {
     },
   });
 
-  ladyBug.register("sim", sim);
   sim.start();
 });

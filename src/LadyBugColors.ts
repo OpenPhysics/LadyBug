@@ -1,10 +1,10 @@
-import { Color, ProfileColorProperty } from "scenerystack";
-import ladyBug from "./LadyBugNamespace.js";
+import { Color, ProfileColorProperty } from "scenerystack/scenery";
+import LadyBugNamespace from "./LadyBugNamespace.js";
 
 const { BLACK, WHITE } = Color;
 
 function profileColor(name: string, def: Color | string, projector: Color | string): ProfileColorProperty {
-  return new ProfileColorProperty(ladyBug, name, { default: def, projector });
+  return new ProfileColorProperty(LadyBugNamespace, name, { default: def, projector });
 }
 
 // ── Panel fill colors ─────────────────────────────────────────────────────────
@@ -71,7 +71,5 @@ const LadyBugColors = {
   seekBarProgressProperty: profileColor("seekBarProgress", "#2575BA", "#2575BA"),
   seekBarHandleProperty: profileColor("seekBarHandle", WHITE, SEEK_HANDLE_LIGHT),
 };
-
-ladyBug.register("LadyBugColors", LadyBugColors);
 
 export default LadyBugColors;

@@ -5,8 +5,8 @@
  * Provides access to localized strings for all components.
  */
 
-import { LocalizedString, type ReadOnlyProperty } from "scenerystack";
-import ladyBug from "../LadyBugNamespace.js";
+import type { ReadOnlyProperty } from "scenerystack/axon";
+import { LocalizedString } from "scenerystack/chipper";
 import stringsEn from "./strings_en.json";
 import stringsEs from "./strings_es.json";
 import stringsFr from "./strings_fr.json";
@@ -18,57 +18,58 @@ void (stringsEn satisfies typeof stringsFr);
 // biome-ignore lint/complexity/noVoid: intentional compile-time type assertion
 void (stringsFr satisfies typeof stringsEn);
 
+// ── Build the reactive string property tree ───────────────────────────────────
+const stringProperties = LocalizedString.getNestedStringProperties({
+  en: stringsEn,
+  fr: stringsFr,
+  es: stringsEs,
+});
+
 export class StringManager {
-  private static instance: StringManager;
-  private readonly stringProperties;
+  private static instance: StringManager | null = null;
 
   private constructor() {
-    this.stringProperties = LocalizedString.getNestedStringProperties({
-      en: stringsEn,
-      fr: stringsFr,
-      es: stringsEs,
-    });
+    // Private — obtain via getInstance()
   }
 
   public static getInstance(): StringManager {
-    if (!StringManager.instance) {
+    if (StringManager.instance === null) {
       StringManager.instance = new StringManager();
-      ladyBug.register("StringManager", StringManager.instance);
     }
     return StringManager.instance;
   }
 
   public getTitleStringProperty(): ReadOnlyProperty<string> {
-    return this.stringProperties.titleStringProperty;
+    return stringProperties.titleStringProperty;
   }
 
   public getScreenNames(): { ladyBugStringProperty: ReadOnlyProperty<string> } {
     return {
-      ladyBugStringProperty: this.stringProperties.screens.ladyBugStringProperty,
+      ladyBugStringProperty: stringProperties.screens.ladyBugStringProperty,
     };
   }
 
   public getVectorsStrings() {
-    return this.stringProperties.vectors;
+    return stringProperties.vectors;
   }
 
   public getMotionStrings() {
-    return this.stringProperties.motion;
+    return stringProperties.motion;
   }
 
   public getTraceStrings() {
-    return this.stringProperties.trace;
+    return stringProperties.trace;
   }
 
   public getRemoteControlStrings() {
-    return this.stringProperties.remoteControl;
+    return stringProperties.remoteControl;
   }
 
   public getPlaybackStrings() {
-    return this.stringProperties.playback;
+    return stringProperties.playback;
   }
 
   public getReturnLadybugStringProperty(): ReadOnlyProperty<string> {
-    return this.stringProperties.returnLadybugStringProperty;
+    return stringProperties.returnLadybugStringProperty;
   }
 }
