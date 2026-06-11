@@ -1,6 +1,7 @@
 import { Screen, type ScreenOptions } from "scenerystack/sim";
 import type { Tandem } from "scenerystack/tandem";
 import { LadyBugModel } from "./model/LadyBugModel.js";
+import { LadyBugKeyboardHelpContent } from "./view/LadyBugKeyboardHelpContent.js";
 import { LadyBugScreenView } from "./view/LadyBugScreenView.js";
 
 type LadyBugScreenOptions = ScreenOptions & { tandem: Tandem };
@@ -10,7 +11,10 @@ export class LadyBugScreen extends Screen<LadyBugModel, LadyBugScreenView> {
     super(
       () => new LadyBugModel(),
       (model) => new LadyBugScreenView(model, { tandem: options.tandem.createTandem("view") }),
-      options,
+      {
+        createKeyboardHelpNode: () => new LadyBugKeyboardHelpContent(),
+        ...options,
+      },
     );
   }
 }
