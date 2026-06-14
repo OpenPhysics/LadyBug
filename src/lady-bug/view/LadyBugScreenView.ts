@@ -1,6 +1,7 @@
 import { DerivedProperty } from "scenerystack/axon";
 import { Vector2 } from "scenerystack/dot";
 import { ModelViewTransform2 } from "scenerystack/phetcommon";
+import { Node } from "scenerystack/scenery";
 import { PhetFont, ResetAllButton } from "scenerystack/scenery-phet";
 import { ScreenView, type ScreenViewOptions } from "scenerystack/sim";
 import { TextPushButton } from "scenerystack/sun";
@@ -8,6 +9,7 @@ import type { Tandem } from "scenerystack/tandem";
 import { StringManager } from "../../i18n/StringManager.js";
 import LadyBugConstants from "../model/LadyBugConstants.js";
 import type { LadyBugModel } from "../model/LadyBugModel.js";
+import { LadyBugScreenSummaryContent } from "./LadyBugScreenSummaryContent.js";
 import LadybugNode from "./LadybugNode.js";
 import LadybugTraceNode from "./LadybugTraceNode.js";
 import LadybugVectorsNode from "./LadybugVectorsNode.js";
@@ -37,7 +39,7 @@ export class LadyBugScreenView extends ScreenView {
   private readonly remoteControlPanel: RemoteControlPanel;
 
   public constructor(model: LadyBugModel, providedOptions: LadyBugScreenViewOptions) {
-    super(providedOptions);
+    super({ ...providedOptions, screenSummaryContent: new LadyBugScreenSummaryContent(model) });
 
     const layoutBounds = this.layoutBounds;
 
@@ -123,6 +125,24 @@ export class LadyBugScreenView extends ScreenView {
       playbackControls,
       resetAllButton,
     ];
+
+    // ── Accessibility: keyboard / reading traversal order ───────────────────────
+    // Deterministic Tab/reading order: the draggable ladybug first, then the
+    // controls, seek bar, playback controls, and Reset All last. ScreenView throws
+    // if you set pdomOrder on itself, so use a wrapper Node.
+    this.addChild(
+      new Node({
+        pdomOrder: [
+          ladybugNode,
+          vectorsControlPanel,
+          remoteControlPanel,
+          returnButton,
+          seekBar,
+          playbackControls,
+          resetAllButton,
+        ],
+      }),
+    );
   }
 
   public reset(): void {

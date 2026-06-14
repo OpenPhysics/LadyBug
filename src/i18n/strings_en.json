@@ -32,5 +32,15 @@
     "playback": "Playback",
     "clear": "Clear"
   },
-  "returnLadybug": "Return Ladybug"
+  "returnLadybug": "Return Ladybug",
+  "a11y": {
+    "screenSummary": {
+      "playArea": "The play area shows a ladybug that moves around a two-dimensional area. Velocity and acceleration vectors and a trace of its path can be shown.",
+      "controlArea": "The controls choose how the ladybug moves — dragged by hand or following a chosen motion — toggle the velocity and acceleration vectors and the path trace, and record or replay the motion. A Reset All button returns the simulation to its starting state.",
+      "interactionHint": "Drag the ladybug or choose a motion, then watch its velocity and acceleration vectors."
+    },
+    "currentDetails": "The ladybug is at position {{x}}, {{y}} meters, moving at {{speed}} meters per second. The simulation is {{state}}.",
+    "playingLabel": "playing",
+    "pausedLabel": "paused"
+  }
 }

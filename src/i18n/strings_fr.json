@@ -32,5 +32,15 @@
     "playback": "Lecture",
     "clear": "Effacer"
   },
-  "returnLadybug": "Ramener la coccinelle"
+  "returnLadybug": "Ramener la coccinelle",
+  "a11y": {
+    "screenSummary": {
+      "playArea": "La zone de jeu montre une coccinelle qui se déplace dans une zone à deux dimensions. Les vecteurs de vitesse et d'accélération ainsi qu'une trace de son trajet peuvent être affichés.",
+      "controlArea": "Les commandes choisissent comment la coccinelle se déplace — déplacée à la main ou suivant un mouvement choisi — activent les vecteurs de vitesse et d'accélération et la trace du trajet, et enregistrent ou rejouent le mouvement. Un bouton Tout réinitialiser ramène la simulation à son état initial.",
+      "interactionHint": "Déplacez la coccinelle ou choisissez un mouvement, puis observez ses vecteurs de vitesse et d'accélération."
+    },
+    "currentDetails": "La coccinelle est à la position {{x}}, {{y}} mètres, se déplaçant à {{speed}} mètres par seconde. La simulation est {{state}}.",
+    "playingLabel": "en cours",
+    "pausedLabel": "en pause"
+  }
 }

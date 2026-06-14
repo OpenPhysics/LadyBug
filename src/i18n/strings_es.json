@@ -32,5 +32,15 @@
     "playback": "Reproducción",
     "clear": "Borrar"
   },
-  "returnLadybug": "Devolver mariquita"
+  "returnLadybug": "Devolver mariquita",
+  "a11y": {
+    "screenSummary": {
+      "playArea": "El área de juego muestra una mariquita que se mueve por un área bidimensional. Se pueden mostrar los vectores de velocidad y aceleración y una traza de su trayectoria.",
+      "controlArea": "Los controles eligen cómo se mueve la mariquita — arrastrada a mano o siguiendo un movimiento elegido — activan los vectores de velocidad y aceleración y la traza de la trayectoria, y graban o reproducen el movimiento. Un botón Restablecer todo devuelve la simulación a su estado inicial.",
+      "interactionHint": "Arrastra la mariquita o elige un movimiento, luego observa sus vectores de velocidad y aceleración."
+    },
+    "currentDetails": "La mariquita está en la posición {{x}}, {{y}} metros, moviéndose a {{speed}} metros por segundo. La simulación está {{state}}.",
+    "playingLabel": "en marcha",
+    "pausedLabel": "en pausa"
+  }
 }
