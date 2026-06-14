@@ -84,6 +84,7 @@ export default class RemoteControlPanel extends Panel {
   public constructor(model: LadyBugModel) {
     const strings = StringManager.getInstance();
     const remote = strings.getRemoteControlStrings();
+    const a11y = strings.getA11yStrings();
     const selectedModeProperty = new Property<UpdateMode>(UpdateMode.POSITION);
 
     const titleFont = new PhetFont({ size: TITLE_FONT_SIZE, weight: "bold" });
@@ -115,6 +116,7 @@ export default class RemoteControlPanel extends Panel {
         orientation: "horizontal",
         spacing: TAB_SPACING,
         radioButtonOptions: { baseColor: LadyBugColors.tabButtonFillProperty },
+        accessibleName: remote.titleStringProperty,
       },
     );
 
@@ -133,7 +135,13 @@ export default class RemoteControlPanel extends Panel {
       clipArea: Shape.bounds(new Bounds2(-HALF, -HALF, HALF, HALF)),
       children: [arrow, knob],
     });
-    const pad = new Node({ children: [padBackground, padLayer] });
+    const pad = new Node({
+      children: [padBackground, padLayer],
+      tagName: "div",
+      focusable: true,
+      accessibleName: remote.titleStringProperty,
+      accessibleHelpText: a11y.controls.remotePadHelpStringProperty,
+    });
 
     const content = new VBox({ spacing: VBOX_SPACING, children: [header, tabs, pad] });
     super(content, {

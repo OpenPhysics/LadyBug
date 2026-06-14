@@ -12,6 +12,7 @@
 import { Shape } from "scenerystack/kite";
 import type { ModelViewTransform2 } from "scenerystack/phetcommon";
 import { Circle, DragListener, Line, Node, Path } from "scenerystack/scenery";
+import { StringManager } from "../../i18n/StringManager.js";
 import LadyBugColors from "../../LadyBugColors.js";
 import LadyBugConstants from "../model/LadyBugConstants.js";
 import type { LadyBugModel } from "../model/LadyBugModel.js";
@@ -96,7 +97,14 @@ const ANTENNA_TIP_RADIUS = 0.035;
 
 export default class LadybugNode extends Node {
   public constructor(model: LadyBugModel, modelViewTransform: ModelViewTransform2) {
-    super({ cursor: "pointer" });
+    const a11y = StringManager.getInstance().getA11yStrings();
+    super({
+      cursor: "pointer",
+      tagName: "div",
+      focusable: true,
+      accessibleName: a11y.controls.ladybugNameStringProperty,
+      accessibleHelpText: a11y.controls.ladybugHelpStringProperty,
+    });
 
     const ladybug = model.ladybug;
 

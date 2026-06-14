@@ -39,6 +39,7 @@ function labelText(stringProperty: TReadOnlyProperty<string>): Node {
 export default class PlaybackControls extends HBox {
   public constructor(model: LadyBugModel) {
     const playback = StringManager.getInstance().getPlaybackStrings();
+    const a11y = StringManager.getInstance().getA11yStrings();
 
     const recordPlaybackGroup = new AquaRadioButtonGroup<boolean>(
       model.recordingProperty,
@@ -50,6 +51,7 @@ export default class PlaybackControls extends HBox {
         orientation: "horizontal",
         spacing: RADIO_BUTTON_SPACING,
         radioButtonOptions: { radius: RADIO_BUTTON_RADIUS, stroke: LadyBugColors.foregroundColorProperty },
+        accessibleName: a11y.controls.recordModeStringProperty,
       },
     );
 

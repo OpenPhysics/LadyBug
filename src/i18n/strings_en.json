@@ -41,6 +41,13 @@
     },
     "currentDetails": "The ladybug is at position {{x}}, {{y}} meters, moving at {{speed}} meters per second. The simulation is {{state}}.",
     "playingLabel": "playing",
-    "pausedLabel": "paused"
+    "pausedLabel": "paused",
+    "controls": {
+      "ladybugName": "Ladybug",
+      "ladybugHelp": "Drag the ladybug to move it; recording starts automatically.",
+      "remotePadHelp": "Drag within the pad to set the selected quantity.",
+      "seekBarName": "Playback position",
+      "recordMode": "Record or playback mode"
+    }
   }
 }

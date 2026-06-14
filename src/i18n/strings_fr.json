@@ -41,6 +41,13 @@
     },
     "currentDetails": "La coccinelle est à la position {{x}}, {{y}} mètres, se déplaçant à {{speed}} mètres par seconde. La simulation est {{state}}.",
     "playingLabel": "en cours",
-    "pausedLabel": "en pause"
+    "pausedLabel": "en pause",
+    "controls": {
+      "ladybugName": "Coccinelle",
+      "ladybugHelp": "Faites glisser la coccinelle pour la déplacer; l'enregistrement démarre automatiquement.",
+      "remotePadHelp": "Faites glisser dans la zone pour régler la quantité sélectionnée.",
+      "seekBarName": "Position de lecture",
+      "recordMode": "Mode enregistrement ou lecture"
+    }
   }
 }

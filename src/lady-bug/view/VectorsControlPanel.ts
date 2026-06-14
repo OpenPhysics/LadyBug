@@ -86,7 +86,7 @@ export default class VectorsControlPanel extends Panel {
         { value: MotionType.CIRCULAR, createNode: () => labelText(motion.circularStringProperty) },
         { value: MotionType.ELLIPTICAL, createNode: () => labelText(motion.ellipticalStringProperty) },
       ],
-      { spacing: RADIO_BUTTON_SPACING, radioButtonOptions },
+      { spacing: RADIO_BUTTON_SPACING, radioButtonOptions, accessibleName: motion.titleStringProperty },
     );
 
     const traceRadioGroup = new AquaRadioButtonGroup<TraceMode>(
@@ -96,7 +96,7 @@ export default class VectorsControlPanel extends Panel {
         { value: "dots", createNode: () => labelText(trace.dotsStringProperty) },
         { value: "off", createNode: () => labelText(trace.offStringProperty) },
       ],
-      { spacing: RADIO_BUTTON_SPACING, radioButtonOptions },
+      { spacing: RADIO_BUTTON_SPACING, radioButtonOptions, accessibleName: trace.titleStringProperty },
     );
 
     const content = new VBox({

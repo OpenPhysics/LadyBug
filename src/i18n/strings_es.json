@@ -41,6 +41,13 @@
     },
     "currentDetails": "La mariquita está en la posición {{x}}, {{y}} metros, moviéndose a {{speed}} metros por segundo. La simulación está {{state}}.",
     "playingLabel": "en marcha",
-    "pausedLabel": "en pausa"
+    "pausedLabel": "en pausa",
+    "controls": {
+      "ladybugName": "Mariquita",
+      "ladybugHelp": "Arrastra la mariquita para moverla; la grabación comienza automáticamente.",
+      "remotePadHelp": "Arrastra dentro del panel para ajustar la cantidad seleccionada.",
+      "seekBarName": "Posición de reproducción",
+      "recordMode": "Modo de grabación o reproducción"
+    }
   }
 }

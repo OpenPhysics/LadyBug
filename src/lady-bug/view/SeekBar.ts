@@ -7,6 +7,7 @@
  */
 
 import { DragListener, Node, Rectangle } from "scenerystack/scenery";
+import { StringManager } from "../../i18n/StringManager.js";
 import LadyBugColors from "../../LadyBugColors.js";
 import type { LadyBugModel } from "../model/LadyBugModel.js";
 
@@ -28,7 +29,11 @@ const HANDLE_STROKE = "rgba(0,0,0,0.4)";
 
 export default class SeekBar extends Node {
   public constructor(model: LadyBugModel, width: number) {
-    super();
+    super({
+      tagName: "div",
+      focusable: true,
+      accessibleName: StringManager.getInstance().getA11yStrings().controls.seekBarNameStringProperty,
+    });
 
     const track = new Rectangle(0, 0, width, BAR_HEIGHT, {
       fill: LadyBugColors.seekBarTrackProperty,
