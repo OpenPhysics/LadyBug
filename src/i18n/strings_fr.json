@@ -49,5 +49,10 @@
       "seekBarName": "Position de lecture",
       "recordMode": "Mode enregistrement ou lecture"
     }
+  },
+  "preferences": {
+    "title": "Simulation",
+    "showVelocity": "Afficher la vitesse",
+    "showAcceleration": "Afficher l'accélération"
   }
 }

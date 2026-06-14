@@ -49,5 +49,10 @@
       "seekBarName": "Playback position",
       "recordMode": "Record or playback mode"
     }
+  },
+  "preferences": {
+    "title": "Simulation",
+    "showVelocity": "Show Velocity",
+    "showAcceleration": "Show Acceleration"
   }
 }

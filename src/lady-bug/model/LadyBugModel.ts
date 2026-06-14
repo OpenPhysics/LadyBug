@@ -10,6 +10,8 @@
 import { BooleanProperty, Emitter, NumberProperty, Property } from "scenerystack/axon";
 import { Bounds2, Vector2 } from "scenerystack/dot";
 import type { TModel } from "scenerystack/joist";
+import type { LadyBugPreferencesModel } from "../../preferences/LadyBugPreferencesModel.js";
+import ladyBugQueryParameters from "../../preferences/ladyBugQueryParameters.js";
 import { closestIndex } from "./binarySearch.js";
 import LadyBugConstants from "./LadyBugConstants.js";
 import Ladybug from "./Ladybug.js";
@@ -34,8 +36,8 @@ export class LadyBugModel implements TModel, MoverContext {
   public readonly isPlayingProperty = new BooleanProperty(false);
   public readonly timeProperty = new NumberProperty(0);
   public readonly furthestRecordedTimeProperty = new NumberProperty(0);
-  public readonly showVelocityProperty = new BooleanProperty(true);
-  public readonly showAccelerationProperty = new BooleanProperty(true);
+  public readonly showVelocityProperty = new BooleanProperty(ladyBugQueryParameters.showVelocity);
+  public readonly showAccelerationProperty = new BooleanProperty(ladyBugQueryParameters.showAcceleration);
   public readonly traceModeProperty = new Property<TraceMode>("line");
 
   // Fired when a state record is appended / when history is removed.
@@ -68,7 +70,11 @@ export class LadyBugModel implements TModel, MoverContext {
   private time = 0;
   private timeAccumulator = 0;
 
-  public constructor() {
+  private readonly preferences: LadyBugPreferencesModel;
+
+  public constructor(preferences: LadyBugPreferencesModel) {
+    this.preferences = preferences;
+    this.applyPreferences();
     this.recordingProperty.lazyLink((recording) => {
       if (!recording) {
         this.prepareForPlayback();
@@ -400,6 +406,15 @@ export class LadyBugModel implements TModel, MoverContext {
 
   // ── Reset ─────────────────────────────────────────────────────────────────────
 
+  /**
+   * Applies the simulation preferences (Preferences → Simulation). Called on
+   * construction and Reset All so the preference defaults take effect.
+   */
+  private applyPreferences(): void {
+    this.showVelocityProperty.value = this.preferences.showVelocityProperty.value;
+    this.showAccelerationProperty.value = this.preferences.showAccelerationProperty.value;
+  }
+
   public reset(): void {
     this.motionTypeProperty.reset();
     this.updateModeProperty.reset();
@@ -410,6 +425,7 @@ export class LadyBugModel implements TModel, MoverContext {
     this.showVelocityProperty.reset();
     this.showAccelerationProperty.reset();
     this.traceModeProperty.reset();
+    this.applyPreferences();
 
     this.time = 0;
     this.timeAccumulator = 0;

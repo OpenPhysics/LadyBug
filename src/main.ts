@@ -20,12 +20,18 @@ import { Tandem } from "scenerystack/tandem";
 import { StringManager } from "./i18n/StringManager.js";
 import LadyBugColors from "./LadyBugColors.js";
 import { LadyBugScreen } from "./lady-bug/LadyBugScreen.js";
+import { LadyBugPreferencesModel } from "./preferences/LadyBugPreferencesModel.js";
+import { LadyBugPreferencesNode } from "./preferences/LadyBugPreferencesNode.js";
 
 onReadyToLaunch(() => {
   const stringManager = StringManager.getInstance();
 
+  // Simulation-specific preferences; initial values come from ladyBugQueryParameters.
+  const ladyBugPreferences = new LadyBugPreferencesModel(Tandem.ROOT.createTandem("preferences"));
+
   const screens = [
     new LadyBugScreen({
+      preferences: ladyBugPreferences,
       // The screen name Property updates automatically when the locale changes
       name: stringManager.getScreenNames().ladyBugStringProperty,
       tandem: Tandem.ROOT.createTandem("ladyBugScreen"),
@@ -40,6 +46,13 @@ onReadyToLaunch(() => {
         supportsProjectorMode: true,
         // Enables keyboard-navigation highlight outlines
         supportsInteractiveHighlights: true,
+      },
+      simulationOptions: {
+        customPreferences: [
+          {
+            createContent: (tandem: Tandem) => new LadyBugPreferencesNode(ladyBugPreferences, tandem),
+          },
+        ],
       },
       localizationOptions: {
         // Adds a language picker in Preferences → Language
