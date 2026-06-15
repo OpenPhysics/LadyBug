@@ -9,7 +9,9 @@
  * Follows the OpenPhysics accessibility convention; see the canonical
  * TemplateSingleSim/SimScreenSummaryContent.ts.
  */
+
 import { DerivedProperty } from "scenerystack/axon";
+import { toFixed } from "scenerystack/dot";
 import { StringUtils } from "scenerystack/phetcommon";
 import { ScreenSummaryContent } from "scenerystack/sim";
 import { StringManager } from "../../i18n/StringManager.js";
@@ -30,9 +32,9 @@ export class LadyBugScreenSummaryContent extends ScreenSummaryContent {
       ],
       (template, playingLabel, pausedLabel, position, velocity, isPlaying) =>
         StringUtils.fillIn(template, {
-          x: position.x.toFixed(1),
-          y: position.y.toFixed(1),
-          speed: velocity.magnitude.toFixed(1),
+          x: toFixed(position.x, 1),
+          y: toFixed(position.y, 1),
+          speed: toFixed(velocity.magnitude, 1),
           state: isPlaying ? playingLabel : pausedLabel,
         }),
     );

@@ -66,6 +66,9 @@ const LadyBugColors = {
   remotePadFillProperty: profileColor("remotePadFill", REMOTE_PAD_FILL_DARK, REMOTE_PAD_FILL_LIGHT),
   tabButtonFillProperty: profileColor("tabButtonFill", TAB_BUTTON_FILL_DARK, TAB_BUTTON_FILL_LIGHT),
 
+  // "Return ladybug" button shown when the ladybug leaves the visible bounds.
+  returnButtonFillProperty: profileColor("returnButtonFill", "#F6E652", "#F6E652"),
+
   // Seek bar / playback timeline.
   seekBarTrackProperty: profileColor("seekBarTrack", SEEK_TRACK_DARK, SEEK_TRACK_LIGHT),
   seekBarProgressProperty: profileColor("seekBarProgress", "#2575BA", "#2575BA"),

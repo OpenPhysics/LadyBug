@@ -7,6 +7,7 @@ import { ScreenView, type ScreenViewOptions } from "scenerystack/sim";
 import { TextPushButton } from "scenerystack/sun";
 import type { Tandem } from "scenerystack/tandem";
 import { StringManager } from "../../i18n/StringManager.js";
+import LadyBugColors from "../../LadyBugColors.js";
 import LadyBugConstants from "../model/LadyBugConstants.js";
 import type { LadyBugModel } from "../model/LadyBugModel.js";
 import { LadyBugScreenSummaryContent } from "./LadyBugScreenSummaryContent.js";
@@ -80,7 +81,7 @@ export class LadyBugScreenView extends ScreenView {
 
     const returnButton = new TextPushButton(StringManager.getInstance().getReturnLadybugStringProperty(), {
       font: new PhetFont(RETURN_BUTTON_FONT_SIZE),
-      baseColor: "#f6e652",
+      baseColor: LadyBugColors.returnButtonFillProperty,
       visibleProperty: new DerivedProperty([model.ladybug.positionProperty], () => model.ladybugOutOfBounds()),
       listener: () => model.returnLadybug(),
     });
