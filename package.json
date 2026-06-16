@@ -1,7 +1,7 @@
 {
   "name": "ladybug",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.9.0",
   "type": "module",
   "description": "SceneryStack port of the PhET 'Ladybug Motion 2D' simulation. Explore 2D motion, position, velocity, and acceleration using a ladybug on a rotating platform.",
   "license": "AGPL-3.0-or-later",
