@@ -326,6 +326,7 @@ export class LadyBugModel implements TModel, MoverContext {
     this.time = 0;
     this.timeProperty.value = 0;
     this.furthestRecordedTimeProperty.value = 0;
+    this.recordingProperty.value = true;
     this.clearHistory();
     if (wasPlaying) {
       this.play();
