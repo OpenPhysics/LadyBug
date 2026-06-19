@@ -11,6 +11,7 @@ import type { Vector2 } from "scenerystack/dot";
 import type { ModelViewTransform2 } from "scenerystack/phetcommon";
 import { Node } from "scenerystack/scenery";
 import { ArrowNode } from "scenerystack/scenery-phet";
+import { StringManager } from "../../i18n/StringManager.js";
 import LadyBugColors from "../../LadyBugColors.js";
 import type { LadyBugModel } from "../model/LadyBugModel.js";
 
@@ -32,16 +33,21 @@ export default class LadybugVectorsNode extends Node {
     super();
 
     const ladybug = model.ladybug;
+    const a11y = StringManager.getInstance().getA11yStrings();
 
     const velocityArrow = new ArrowNode(0, 0, 0, 0, {
       ...ARROW_OPTIONS,
       fill: LadyBugColors.velocityVectorProperty,
       visibleProperty: model.showVelocityProperty,
+      tagName: "img",
+      accessibleName: a11y.vectorArrows.velocityNameStringProperty,
     });
     const accelerationArrow = new ArrowNode(0, 0, 0, 0, {
       ...ARROW_OPTIONS,
       fill: LadyBugColors.accelerationVectorProperty,
       visibleProperty: model.showAccelerationProperty,
+      tagName: "img",
+      accessibleName: a11y.vectorArrows.accelerationNameStringProperty,
     });
     this.children = [velocityArrow, accelerationArrow];
 

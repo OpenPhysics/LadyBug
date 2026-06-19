@@ -56,7 +56,8 @@ export default class SeekBar extends Node {
 
     const updateProgress = (): void => {
       const furthest = model.furthestRecordedTimeProperty.value;
-      const w = (furthest / maxTime()) * width;
+      const max = maxTime();
+      const w = max > 0 ? (furthest / max) * width : 0;
       progress.rectWidth = Math.max(0, w);
       progress.visible = w > 0;
     };
@@ -84,9 +85,13 @@ export default class SeekBar extends Node {
       if (!scrubbable()) {
         return;
       }
-      const progressWidth = (model.furthestRecordedTimeProperty.value / maxTime()) * width;
+      const max = maxTime();
+      if (max <= 0) {
+        return;
+      }
+      const progressWidth = (model.furthestRecordedTimeProperty.value / max) * width;
       const x = Math.max(0, Math.min(progressWidth, localX));
-      model.setTime((x / width) * maxTime());
+      model.setTime((x / width) * max);
     };
 
     handle.addInputListener(

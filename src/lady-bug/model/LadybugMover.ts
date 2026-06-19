@@ -173,8 +173,8 @@ export default class LadybugMover {
     // Advance the parametric angle by 2π / n per step, where n is the total number of
     // steps per revolution. See LadyBugConstants.ELLIPTICAL_STEPS_PER_SECOND for the
     // calibration rationale behind the factor.
-    const n = LadyBugConstants.ELLIPTICAL_STEPS_PER_SECOND * dt;
-    const deltaT = (2 * Math.PI) / Math.floor(n);
+    const n = Math.max(1, Math.floor(LadyBugConstants.ELLIPTICAL_STEPS_PER_SECOND * dt));
+    const deltaT = (2 * Math.PI) / n;
     this.elapsedEllipticalTime += deltaT;
     const t = this.elapsedEllipticalTime;
 

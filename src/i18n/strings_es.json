@@ -45,9 +45,19 @@
     "controls": {
       "ladybugName": "Mariquita",
       "ladybugHelp": "Arrastra la mariquita para moverla; la grabación comienza automáticamente.",
-      "remotePadHelp": "Arrastra dentro del panel para ajustar la cantidad seleccionada.",
+      "remotePadHelp": "Arrastra dentro del panel para ajustar la cantidad seleccionada. Usa las pestañas Posición, Velocidad y Aceleración para cambiar el modo de control.",
       "seekBarName": "Posición de reproducción",
       "recordMode": "Modo de grabación o reproducción"
+    },
+    "trace": {
+      "nodeName": "Traza del movimiento",
+      "lineHelp": "Traza mostrada como línea continua.",
+      "dotsHelp": "Traza mostrada como puntos.",
+      "offHelp": "La traza está oculta."
+    },
+    "vectorArrows": {
+      "velocityName": "Vector de velocidad",
+      "accelerationName": "Vector de aceleración"
     }
   },
   "preferences": {
