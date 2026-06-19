@@ -45,9 +45,19 @@
     "controls": {
       "ladybugName": "Ladybug",
       "ladybugHelp": "Drag the ladybug to move it; recording starts automatically.",
-      "remotePadHelp": "Drag within the pad to set the selected quantity.",
+      "remotePadHelp": "Drag within the pad to set the selected quantity. Use the Position, Velocity, and Acceleration tabs to change the control mode.",
       "seekBarName": "Playback position",
       "recordMode": "Record or playback mode"
+    },
+    "trace": {
+      "nodeName": "Motion path trace",
+      "lineHelp": "Trace shown as a continuous line.",
+      "dotsHelp": "Trace shown as dots.",
+      "offHelp": "Trace is hidden."
+    },
+    "vectorArrows": {
+      "velocityName": "Velocity vector",
+      "accelerationName": "Acceleration vector"
     }
   },
   "preferences": {

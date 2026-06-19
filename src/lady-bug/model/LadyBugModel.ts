@@ -58,7 +58,11 @@ export class LadyBugModel implements TModel, MoverContext {
   private penDown = false;
   private penPoint = new Vector2(0, 0);
   private readonly stateHistory: LadybugStateRecord[] = [];
-  public readonly culledStateHistory: LadybugStateRecord[] = [];
+  private readonly _culledStateHistory: LadybugStateRecord[] = [];
+
+  public get culledStateHistory(): ReadonlyArray<LadybugStateRecord> {
+    return this._culledStateHistory;
+  }
   private historyTimes: number[] | null = null;
   private bounds = new Bounds2(
     -LadyBugConstants.SCENE_DIAMETER / 2,
@@ -122,6 +126,8 @@ export class LadyBugModel implements TModel, MoverContext {
 
   private stepRecording(deltaTime: number): void {
     if (this.time >= LadyBugConstants.MAX_RECORDING_TIME) {
+      this.time = LadyBugConstants.MAX_RECORDING_TIME;
+      this.timeProperty.value = this.time;
       this.recordingProperty.value = false;
       return;
     }
@@ -244,7 +250,7 @@ export class LadyBugModel implements TModel, MoverContext {
     record.record(this.time, this.ladybug);
 
     if (!this.stateMatchesPrevious(record)) {
-      this.culledStateHistory.push(record);
+      this._culledStateHistory.push(record);
     }
     this.stateHistory.push(record);
     this.historyAddedEmitter.emit();
@@ -286,7 +292,7 @@ export class LadyBugModel implements TModel, MoverContext {
 
   public clearHistory(): void {
     this.stateHistory.length = 0;
-    this.culledStateHistory.length = 0;
+    this._culledStateHistory.length = 0;
     this.clearSampleHistory();
     this.historyRemovedEmitter.emit();
   }
@@ -296,14 +302,14 @@ export class LadyBugModel implements TModel, MoverContext {
     if (historyIdx !== -1) {
       this.stateHistory.splice(historyIdx);
     }
-    const culledIdx = this.culledStateHistory.findIndex((s) => s.time >= time);
+    const culledIdx = this._culledStateHistory.findIndex((s) => s.time >= time);
     if (culledIdx !== -1) {
-      this.culledStateHistory.splice(culledIdx);
+      this._culledStateHistory.splice(culledIdx);
     }
     this.historyTimes = null;
     this.furthestRecordedTimeProperty.value = time;
 
-    if (this.penDown) {
+    if (this.penDown && this.mover.isManual()) {
       this.clearSampleHistory();
       this.resetSamplingMotionModel();
     }

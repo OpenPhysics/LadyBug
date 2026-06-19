@@ -6,9 +6,11 @@
  * that each segment can be stroked with its own alpha cheaply.
  */
 
+import { DerivedProperty } from "scenerystack/axon";
 import type { Bounds2 } from "scenerystack/dot";
 import type { ModelViewTransform2 } from "scenerystack/phetcommon";
 import { CanvasNode } from "scenerystack/scenery";
+import { StringManager } from "../../i18n/StringManager.js";
 import LadyBugColors from "../../LadyBugColors.js";
 import LadyBugConstants from "../model/LadyBugConstants.js";
 import type { LadyBugModel } from "../model/LadyBugModel.js";
@@ -28,7 +30,22 @@ export default class LadybugTraceNode extends CanvasNode {
   private readonly modelViewTransform: ModelViewTransform2;
 
   public constructor(model: LadyBugModel, modelViewTransform: ModelViewTransform2, canvasBounds: Bounds2) {
-    super({ canvasBounds });
+    const a11y = StringManager.getInstance().getA11yStrings();
+    const traceHelpProperty = new DerivedProperty(
+      [
+        model.traceModeProperty,
+        a11y.trace.lineHelpStringProperty,
+        a11y.trace.dotsHelpStringProperty,
+        a11y.trace.offHelpStringProperty,
+      ],
+      (mode, lineHelp, dotsHelp, offHelp) => (mode === "line" ? lineHelp : mode === "dots" ? dotsHelp : offHelp),
+    );
+    super({
+      canvasBounds,
+      tagName: "figure",
+      accessibleName: a11y.trace.nodeNameStringProperty,
+      accessibleHelpText: traceHelpProperty,
+    });
     this.model = model;
     this.modelViewTransform = modelViewTransform;
 

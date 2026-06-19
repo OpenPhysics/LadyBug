@@ -170,7 +170,9 @@ export default class RemoteControlPanel extends Panel {
       let tip: Vector2;
       if (selectedModeProperty.value === UpdateMode.POSITION) {
         const bounds = model.getBounds();
-        tip = new Vector2((ladybug.position.x / bounds.width) * AREA, (ladybug.position.y / bounds.height) * AREA);
+        const bw = bounds.width || 1;
+        const bh = bounds.height || 1;
+        tip = new Vector2((ladybug.position.x / bw) * AREA, (ladybug.position.y / bh) * AREA);
       } else if (selectedModeProperty.value === UpdateMode.VELOCITY) {
         tip = ladybug.velocity.timesScalar(AREA);
       } else {

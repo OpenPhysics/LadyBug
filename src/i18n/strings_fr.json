@@ -45,9 +45,19 @@
     "controls": {
       "ladybugName": "Coccinelle",
       "ladybugHelp": "Faites glisser la coccinelle pour la déplacer; l'enregistrement démarre automatiquement.",
-      "remotePadHelp": "Faites glisser dans la zone pour régler la quantité sélectionnée.",
+      "remotePadHelp": "Faites glisser dans la zone pour régler la quantité sélectionnée. Utilisez les onglets Position, Vitesse et Accélération pour changer le mode de contrôle.",
       "seekBarName": "Position de lecture",
       "recordMode": "Mode enregistrement ou lecture"
+    },
+    "trace": {
+      "nodeName": "Trace du trajet",
+      "lineHelp": "Trace affichée sous forme de ligne continue.",
+      "dotsHelp": "Trace affichée sous forme de points.",
+      "offHelp": "La trace est masquée."
+    },
+    "vectorArrows": {
+      "velocityName": "Vecteur vitesse",
+      "accelerationName": "Vecteur accélération"
     }
   },
   "preferences": {
