@@ -82,6 +82,11 @@ export class LadyBugModel implements TModel, MoverContext {
     this.recordingProperty.lazyLink((recording) => {
       if (!recording) {
         this.prepareForPlayback();
+        // Rewind to the start so Play doesn't immediately stop because this.time is
+        // already at (or past) furthestRecordedTimeProperty.
+        this.time = 0;
+        this.timeProperty.value = 0;
+        this.applyPlaybackState();
       }
     });
     this.isPlayingProperty.lazyLink((isPlaying) => this.pausedChanged(!isPlaying));
@@ -293,6 +298,7 @@ export class LadyBugModel implements TModel, MoverContext {
   public clearHistory(): void {
     this.stateHistory.length = 0;
     this._culledStateHistory.length = 0;
+    this.historyTimes = null;
     this.clearSampleHistory();
     this.historyRemovedEmitter.emit();
   }
