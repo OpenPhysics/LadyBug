@@ -1,3 +1,4 @@
+import { type EmptySelfOptions, optionize } from "scenerystack/phet-core";
 import { Screen, type ScreenOptions } from "scenerystack/sim";
 import type { Tandem } from "scenerystack/tandem";
 import type { LadyBugPreferencesModel } from "../preferences/LadyBugPreferencesModel.js";
@@ -12,10 +13,12 @@ export class LadyBugScreen extends Screen<LadyBugModel, LadyBugScreenView> {
     super(
       () => new LadyBugModel(options.preferences),
       (model) => new LadyBugScreenView(model, { tandem: options.tandem.createTandem("view") }),
-      {
-        createKeyboardHelpNode: () => new LadyBugKeyboardHelpContent(),
-        ...options,
-      },
+      optionize<LadyBugScreenOptions, EmptySelfOptions, ScreenOptions>()(
+        {
+          createKeyboardHelpNode: () => new LadyBugKeyboardHelpContent(),
+        },
+        options,
+      ),
     );
   }
 }
