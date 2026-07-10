@@ -2,20 +2,20 @@
 
 ## Architecture Overview
 
-The LadyBug simulation is structured using a Model-View pattern for 2D kinematics on a rotatable platform. It is a SceneryStack port of the PhET *Ladybug Motion 2D* simulation.
+The LadyBug simulation is structured using a Model-View pattern for 2D kinematics in a circular play area. It is a SceneryStack port of the PhET *Ladybug Motion 2D* simulation.
 
 ### High-Level Architecture
 
 The simulation follows a modular architecture:
 
 - **Model Layer (`src/lady-bug/model/`)**: Ladybug state, automated motion paths, record/playback history, and fixed-timestep integration
-- **View Layer (`src/lady-bug/view/`)**: Platform, ladybug sprite, vectors, trace, and control panels
+- **View Layer (`src/lady-bug/view/`)**: Play area, ladybug sprite, vectors, trace, and control panels
 
 Data flows primarily from Model → View. `LadyBugModel` implements `TModel` and exposes a `MoverContext` interface consumed by `LadybugMover`.
 
 ### Model-View Transform
 
-The origin is at the platform center (`Vector2.ZERO`) with non-inverted Y. The view computes bounds from the play area and calls `model.setBounds()`.
+The origin is at the play-area center (`Vector2.ZERO`) with non-inverted Y. The view computes bounds from the play area and calls `model.setBounds()`.
 
 ## Model Components
 
@@ -27,7 +27,7 @@ The origin is at the platform center (`Vector2.ZERO`) with non-inverted Y. The v
 
 Each model component has a single responsibility:
 
-1. **Ladybug**: Position, velocity, acceleration, and heading on the rotatable platform
+1. **Ladybug**: Position, velocity, acceleration, and heading in the play area
 2. **LadybugMover**: Automated paths — Linear, Circular, and Elliptical
 3. **SamplingMotionModel**: Smoothed derivative estimation for acceleration
 4. **MotionType**: Manual, Linear, Circular, or Elliptical driving
@@ -48,12 +48,12 @@ The screen view lays out the play area, right-side panels, and bottom seek/playb
 
 Specialized view classes handle specific visualization aspects:
 
-1. **LadybugNode**: Ladybug sprite on the rotatable platform
+1. **LadybugNode**: Draggable ladybug sprite in the play area
 2. **LadybugVectorsNode**: Velocity and acceleration vector arrows
 3. **LadybugTraceNode**: Motion trace (line, dots, or off)
-4. **RemoteControlPanel**: Motion presets, platform rotation, pen trace
-5. **VectorsControlPanel**: Vector visibility toggles
-6. **PlaybackControls** and **SeekBar**: Timeline scrubbing during playback
+4. **RemoteControlPanel**: Position / velocity / acceleration remote-control pad (arrow drag)
+5. **VectorsControlPanel**: Vector visibility toggles, motion-preset radio buttons, and trace-mode selection
+6. **PlaybackControls** and **SeekBar**: Record/playback and timeline scrubbing
 
 ### Color Scheme
 

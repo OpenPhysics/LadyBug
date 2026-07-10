@@ -1,14 +1,17 @@
 # Lady Bug
 
 A [SceneryStack](https://scenerystack.org/) port of the PhET *Ladybug Motion 2D* simulation. Explore 2D
-motion, position, velocity, and acceleration using a ladybug on a rotating platform.
+motion, position, velocity, and acceleration by dragging the ladybug or choosing automated motion paths.
 
 ## Features
 
-- Single-screen kinematics simulation on a rotatable platform
-- Drag the ladybug and observe position, velocity, and acceleration vectors
+- Single-screen 2D kinematics in a circular play area
+- Drag the ladybug directly, or use the **Remote Control** pad to set position, velocity, or acceleration
+- Motion presets: manual, linear, circular, and elliptical paths
+- Toggle velocity and acceleration vectors; trace the path as a line, dots, or off
+- Record and replay motion with a timeline seek bar
 - Default and projector color profiles
-- English and French localization
+- English, Spanish, and French localization
 - Progressive Web App with GitHub Pages deployment via GitHub Actions
 
 ## Quick Start
