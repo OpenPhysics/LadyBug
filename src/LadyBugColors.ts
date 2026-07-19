@@ -54,6 +54,7 @@ const LadyBugColors = {
 
   // The ladybug itself.
   ladybugBodyProperty: profileColor("ladybugBody", "#D8262B", "#C81E22"),
+  // Spots stay pure black in both profiles (ink on the red elytra).
   ladybugSpotsProperty: profileColor("ladybugSpots", BLACK, BLACK),
   ladybugHeadProperty: profileColor("ladybugHead", HEAD_FILL_DARK, BLACK),
   ladybugWingSeamProperty: profileColor("ladybugWingSeam", WING_SEAM_FILL_DARK, BLACK),
@@ -66,12 +67,13 @@ const LadyBugColors = {
   remotePadFillProperty: profileColor("remotePadFill", REMOTE_PAD_FILL_DARK, REMOTE_PAD_FILL_LIGHT),
   tabButtonFillProperty: profileColor("tabButtonFill", TAB_BUTTON_FILL_DARK, TAB_BUTTON_FILL_LIGHT),
 
-  // "Return ladybug" button shown when the ladybug leaves the visible bounds.
-  returnButtonFillProperty: profileColor("returnButtonFill", "#F6E652", "#F6E652"),
+  // "Return ladybug" button — slightly darker yellow in projector for white backgrounds.
+  returnButtonFillProperty: profileColor("returnButtonFill", "#F6E652", "#D4C020"),
 
   // Seek bar / playback timeline.
   seekBarTrackProperty: profileColor("seekBarTrack", SEEK_TRACK_DARK, SEEK_TRACK_LIGHT),
-  seekBarProgressProperty: profileColor("seekBarProgress", "#2575BA", "#2575BA"),
+  // Progress fill — deeper blue in projector for contrast on the light track.
+  seekBarProgressProperty: profileColor("seekBarProgress", "#2575BA", "#1565A0"),
   seekBarHandleProperty: profileColor("seekBarHandle", WHITE, SEEK_HANDLE_LIGHT),
 
   // Fleet-standard aliases for shared Panel + ButtonOptions modules.
