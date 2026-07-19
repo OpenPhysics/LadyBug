@@ -11,7 +11,7 @@
 
 import { Shape } from "scenerystack/kite";
 import type { ModelViewTransform2 } from "scenerystack/phetcommon";
-import { Circle, DragListener, Line, Node, Path } from "scenerystack/scenery";
+import { Circle, DragListener, KeyboardDragListener, Line, Node, Path } from "scenerystack/scenery";
 import { StringManager } from "../../i18n/StringManager.js";
 import LadyBugColors from "../../LadyBugColors.js";
 import LadyBugConstants from "../model/LadyBugConstants.js";
@@ -134,22 +134,41 @@ export default class LadybugNode extends Node {
       closedWings.visible = !open;
     });
 
+    const startPositionDrive = (): void => {
+      model.startSampling();
+      if (!model.recordingProperty.value) {
+        model.recordingProperty.value = true;
+      }
+      if (!model.isPlayingProperty.value) {
+        model.play();
+      }
+      model.motionTypeProperty.value = MotionType.MANUAL;
+      model.updateModeProperty.value = UpdateMode.POSITION;
+    };
+
     this.addInputListener(
       new DragListener({
-        start: () => {
-          model.startSampling();
-          if (!model.recordingProperty.value) {
-            model.recordingProperty.value = true;
-          }
-          if (!model.isPlayingProperty.value) {
-            model.play();
-          }
-          model.motionTypeProperty.value = MotionType.MANUAL;
-          model.updateModeProperty.value = UpdateMode.POSITION;
-        },
+        start: startPositionDrive,
         drag: (event) => {
           const viewPoint = this.globalToParentPoint(event.pointer.point);
           model.setSamplePoint(modelViewTransform.viewToModelPosition(viewPoint));
+        },
+        end: () => {
+          model.stopSampling();
+        },
+      }),
+    );
+
+    // Keyboard equivalent: arrow keys / WASD nudge the ladybug in model space.
+    this.addInputListener(
+      new KeyboardDragListener({
+        transform: modelViewTransform,
+        dragSpeed: 120,
+        shiftDragSpeed: 40,
+        start: startPositionDrive,
+        drag: (_event, listener) => {
+          const next = ladybug.positionProperty.value.plusXY(listener.modelDelta.x, listener.modelDelta.y);
+          model.setSamplePoint(next);
         },
         end: () => {
           model.stopSampling();
