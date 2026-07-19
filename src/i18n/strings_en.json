@@ -47,7 +47,12 @@
       "ladybugHelp": "Drag the ladybug to move it; recording starts automatically.",
       "remotePadHelp": "Drag within the pad to set the selected quantity. Use the Position, Velocity, and Acceleration tabs to change the control mode.",
       "seekBarName": "Playback position",
-      "recordMode": "Record or playback mode"
+      "recordMode": "Record or playback mode",
+      "playPauseStart": "Play",
+      "playPauseEnd": "Pause",
+      "stepForward": "Step forward",
+      "stepBackward": "Step backward",
+      "resetAll": "Reset All"
     },
     "trace": {
       "nodeName": "Motion path trace",

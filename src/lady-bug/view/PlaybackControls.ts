@@ -58,14 +58,20 @@ export default class PlaybackControls extends HBox {
     const rewindButton = new StepBackwardButton({
       radius: TRANSPORT_BUTTON_RADIUS,
       listener: () => model.rewind(),
+      accessibleName: a11y.controls.stepBackwardStringProperty,
     });
 
-    const playPauseButton = new PlayPauseButton(model.isPlayingProperty, { radius: PLAY_PAUSE_BUTTON_RADIUS });
+    const playPauseButton = new PlayPauseButton(model.isPlayingProperty, {
+      radius: PLAY_PAUSE_BUTTON_RADIUS,
+      startPlayingAccessibleName: a11y.controls.playPauseStartStringProperty,
+      endPlayingAccessibleName: a11y.controls.playPauseEndStringProperty,
+    });
 
     const stepForwardButton = new StepForwardButton({
       radius: TRANSPORT_BUTTON_RADIUS,
       enabledProperty: DerivedProperty.not(model.isPlayingProperty),
       listener: () => model.stepOnce(),
+      accessibleName: a11y.controls.stepForwardStringProperty,
     });
 
     const clearButton = new TextPushButton(playback.clearStringProperty, {

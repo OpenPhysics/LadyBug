@@ -100,6 +100,7 @@ export class LadyBugScreenView extends ScreenView {
       right: layoutBounds.maxX - MARGIN,
       bottom: layoutBounds.maxY - MARGIN,
       tandem: providedOptions.tandem.createTandem("resetAllButton"),
+      accessibleName: StringManager.getInstance().getA11yStrings().controls.resetAllStringProperty,
     });
 
     // Position everything.

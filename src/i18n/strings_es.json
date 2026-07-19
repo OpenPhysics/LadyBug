@@ -47,7 +47,12 @@
       "ladybugHelp": "Arrastra la mariquita para moverla; la grabación comienza automáticamente.",
       "remotePadHelp": "Arrastra dentro del panel para ajustar la cantidad seleccionada. Usa las pestañas Posición, Velocidad y Aceleración para cambiar el modo de control.",
       "seekBarName": "Posición de reproducción",
-      "recordMode": "Modo de grabación o reproducción"
+      "recordMode": "Modo de grabación o reproducción",
+      "playPauseStart": "Reproducir",
+      "playPauseEnd": "Pausa",
+      "stepForward": "Avanzar un paso",
+      "stepBackward": "Retroceder un paso",
+      "resetAll": "Restablecer todo"
     },
     "trace": {
       "nodeName": "Traza del movimiento",
