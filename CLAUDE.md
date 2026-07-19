@@ -6,7 +6,9 @@ Sim-specific context for AI assistants. General SceneryStack guidance: [OpenPhys
 
 SceneryStack port of the PhET *Ladybug Motion 2D* simulation. Single screen: drive a ladybug around a 2D play area by **position, velocity, or acceleration**, or hand control to a **motion preset** (Linear / Circular / Elliptical), and study the resulting kinematics with on-screen velocity/acceleration vectors and a motion trace. Motion is **recorded** and can be scrubbed/played back.
 
-> Not to be confused with *Ladybug Revolution* — there is **no rotatable platform** here. The only rotation is the ladybug's heading (it turns to face its velocity) and the circular-motion preset's path around a ring.
+> **Not Ladybug Revolution.** There is **no rotatable platform** here — only the ladybug's heading (it turns to face its velocity) and the circular-motion preset's path around a fixed ring.
+
+Physics for educators: `doc/model.md`. Architecture: `doc/implementation-notes.md`.
 
 ## Key files
 
@@ -16,7 +18,7 @@ SceneryStack port of the PhET *Ladybug Motion 2D* simulation. Single screen: dri
 | Model | `model/LadyBugModel.ts` (state + record/playback step), `Ladybug.ts`, `LadybugMover.ts` (motion presets), `SamplingMotionModel.ts` (derivative estimation), `LadybugStateRecord.ts`, `LadyBugConstants.ts` |
 | Enums | `model/MotionType.ts` (Manual/Linear/Circular/Elliptical), `model/UpdateMode.ts` (position/velocity/acceleration) |
 | Numeric helpers | `model/motionMath.ts`, `model/binarySearch.ts` |
-| View | `view/LadyBugScreenView.ts`, `LadybugNode.ts`, `LadybugTraceNode.ts`, `LadybugVectorsNode.ts`, `PlaybackControls.ts`, `SeekBar.ts`, `RemoteControlPanel.ts`, `VectorsControlPanel.ts` |
+| View | `view/LadyBugScreenView.ts`, `LadybugNode.ts`, `LadybugTraceNode.ts`, `LadybugVectorsNode.ts`, `PlaybackControls.ts`, `SeekBar.ts`, `RemoteControlPanel.ts`, `VectorsControlPanel.ts`, `LadyBugScreenSummaryContent.ts` |
 | Colors / strings | `LadyBugColors.ts`, `LadyBugNamespace.ts`, `src/i18n/StringManager.ts` |
 
 ## Model
@@ -60,24 +62,25 @@ Fleet-standard Vitest layout:
 
 | Path | Purpose |
 |---|---|
-| `vitest.config.ts` | Test environment + `setupFiles` when present; `execArgv: ["--expose-gc"]` with memory-leak suite |
-| `tests/setup.ts` | Canvas / AudioContext mocks + `init({ name: "…" })` before SceneryStack imports (when required) |
+| `vitest.config.ts` | `happy-dom` environment, `setupFiles`, `execArgv: ["--expose-gc"]` |
+| `tests/setup.ts` | Canvas / AudioContext mocks + `init({ name: "…" })` before SceneryStack imports |
 | `tests/**/*.test.ts` | Model/physics unit tests — mirror `src/` under `tests/` |
 | `tests/memory-leak.test.ts` | WeakRef + `forceGC` dispose regression (fleet pattern) |
 
-- Put unit tests only under root `tests/` (never co-locate or use `__tests__/`).
-- Run `npm test`. CI runs the suite when a `test` script is present.
-- Expand `memory-leak.test.ts` for components that add/remove nodes or link Properties at runtime (see OpticsLab).
+Actual specs:
+
+- `tests/lady-bug/model/SamplingMotionModel.test.ts`
+- `tests/memory-leak.test.ts`
+
+Run `npm test`. CI runs the suite when a `test` script is present.
 
 ## Commands
 
 ```bash
 npm run lint && npm run check && npm run build
+npm test
 ```
-
-No unit-test suite — the build/lint/check gate plus manual run substitute for tests here.
 
 ## Development notes
 
-- English and French UI via `StringManager`.
 - Vector display and the manual position/velocity/acceleration modes are the core pedagogical features; keep the velocity/acceleration smoothing intact when touching `SamplingMotionModel`.

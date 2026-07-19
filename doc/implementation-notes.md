@@ -1,67 +1,99 @@
-# Implementation Notes - LadyBug Simulation
+# Implementation Notes - Lady Bug
+
+Developer-facing notes on the architecture. The physics itself is documented for educators in
+[model.md](./model.md).
 
 ## Architecture Overview
 
-The LadyBug simulation is structured using a Model-View pattern for 2D kinematics in a circular play area. It is a SceneryStack port of the PhET *Ladybug Motion 2D* simulation.
+Lady Bug is a single-screen SceneryStack simulation, a TypeScript port of PhET's *Ladybug Motion 2D*.
+The code separates model state from scenery views; data flows Model → View through AXON
+`Property` objects.
 
-### High-Level Architecture
+```
+src/
+  main.ts, brand.ts, splash.ts, assert.ts, init.ts     bootstrap chain (brand first)
+  LadyBugColors.ts, LadyBugNamespace.ts                 profile colors + namespace
+  i18n/StringManager.ts, strings_*.json                 localization
+  preferences/                                          query params + Preferences dialog
+  lady-bug/
+    LadyBugScreen.ts                                    Screen factory (model + view)
+    model/
+      LadyBugModel.ts                                   TModel: record/playback, stepping, bounds
+      Ladybug.ts                                        position / velocity / acceleration / heading
+      LadybugMover.ts                                   Linear / Circular / Elliptical presets
+      SamplingMotionModel.ts                            smoothed v, a from position history
+      LadybugStateRecord.ts                             playback snapshot
+      MotionType.ts, UpdateMode.ts                      string-union enums
+      LadyBugConstants.ts, motionMath.ts, binarySearch.ts
+    view/
+      LadyBugScreenView.ts                              layout, mvt, PDOM, keyboard
+      LadybugNode.ts, LadybugVectorsNode.ts, LadybugTraceNode.ts
+      RemoteControlPanel.ts, VectorsControlPanel.ts
+      PlaybackControls.ts, SeekBar.ts
+      LadyBugScreenSummaryContent.ts, LadyBugKeyboardHelpContent.ts
+```
 
-The simulation follows a modular architecture:
+`LadyBugModel` implements `TModel` and the `MoverContext` interface consumed by `LadybugMover`.
 
-- **Model Layer (`src/lady-bug/model/`)**: Ladybug state, automated motion paths, record/playback history, and fixed-timestep integration
-- **View Layer (`src/lady-bug/view/`)**: Play area, ladybug sprite, vectors, trace, and control panels
+## Key design decisions
 
-Data flows primarily from Model → View. `LadyBugModel` implements `TModel` and exposes a `MoverContext` interface consumed by `LadybugMover`.
+- **Not Ladybug Revolution.** There is no rotatable platform — only heading rotation
+  (`Ladybug.pointInDirectionOfMotion`) and the circular preset's fixed ring. Do not add a
+  spinning reference frame.
+- **Fixed timestep accumulator.** `step(dt)` consumes whole `FIXED_DT` (1/30 s) slices, capped
+  by `MAX_CATCHUP_STEPS`. Preset constants and position-mode fudge factors are calibrated for
+  this dt; never integrate with raw frame dt.
+- **Differentiate, don't integrate, in position mode.** `SamplingMotionModel` (ported from PhET's
+  `Motion2DModel`) keeps a rolling position history and returns window-averaged velocity and
+  acceleration. `POSITION_MODE_V_SCALE_FACTOR` and `POSITION_MODE_A_SCALE_FACTOR` rescale the
+  result for the fixed dt. Touching this smoothing changes the pedagogical feel.
+- **Virtual pen for manual input.** Drag and remote-pad input write sample points into a pen path;
+  position mode reads the smoothed midpoint of that path. `penDown` forces position mode while
+  dragging even if velocity/acceleration mode is selected.
+- **Record vs playback branch.** `recordingProperty` selects `stepRecording` (advance mover,
+  append `LadybugStateRecord`, trim pen path) vs `stepPlayback` (binary-search history, apply
+  stored state). Auto-stop at `MAX_RECORDING_TIME` (20 s).
+- **History culling.** Consecutive identical positions are omitted from `culledStateHistory` (for
+  the trace) but kept in the full `stateHistory` (for derivative estimation during recording).
+- **Nested constants.** Physics constants live in `src/lady-bug/model/LadyBugConstants.ts` (fleet
+  carve-out for PhET-port layout); colors in `LadyBugColors.ts`.
 
-### Model-View Transform
+## View components
 
-The origin is at the play-area center (`Vector2.ZERO`) with non-inverted Y. The view computes bounds from the play area and calls `model.setBounds()`.
+- **LadyBugScreenView** — circular play area (`ModelViewTransform2`, origin at center, +y up),
+  right column (remote pad + vectors panel), bottom seek/playback. Calls `model.setBounds()` from
+  layout. `ladybugOutOfBounds()` drives an out-of-bounds indicator when manual drag leaves the
+  square model bounds.
+- **LadybugNode** — draggable sprite; drag listeners feed the model pen path.
+- **LadybugVectorsNode** — velocity/acceleration arrows gated on `showVelocityProperty` /
+  `showAccelerationProperty`.
+- **LadybugTraceNode** — line or dot trace from `culledStateHistory`; opacity fade per
+  `TRACE_SECONDS_TO_BE_OLD`.
+- **RemoteControlPanel** — arrow drag for the active `UpdateMode`.
+- **VectorsControlPanel** — vector toggles, motion-preset radio buttons, trace mode.
+- **PlaybackControls / SeekBar** — record toggle, play/pause, scrub `timeProperty`.
 
-## Model Components
+Decorative knob strokes in `RemoteControlPanel` / `SeekBar` use hardcoded `rgba(0,0,0,0.4)`
+(carve-out: translucent borders on both color profiles).
 
-### Core Model Design
+## Disposal conventions
 
-`LadyBugModel` coordinates motion type, update mode, recording/playback, simulation time, trace mode, and state history.
+Screen-lifetime nodes (panels, play area, chrome) persist for the app session and intentionally
+do not dispose. `SamplingMotionModel` is pure numeric state with no axon links. Dynamic
+add/remove patterns are minimal for this sim; the fleet memory-leak suite uses
+`SamplingMotionModel` as its dispose unit (see `tests/memory-leak.test.ts`).
 
-### Component Specialization
+## Testing
 
-Each model component has a single responsibility:
+`npm test` (vitest, `--expose-gc` for GC regression):
 
-1. **Ladybug**: Position, velocity, acceleration, and heading in the play area
-2. **LadybugMover**: Automated paths — Linear, Circular, and Elliptical
-3. **SamplingMotionModel**: Smoothed derivative estimation for acceleration
-4. **MotionType**: Manual, Linear, Circular, or Elliptical driving
-5. **UpdateMode**: Position, velocity, or acceleration as the driving quantity in manual mode
-6. **LadybugStateRecord**: Snapshot for playback scrubbing
+- `tests/lady-bug/model/SamplingMotionModel.test.ts` — derivative sign, reset, constant-velocity
+  acceleration near zero
+- `tests/memory-leak.test.ts` — fleet-standard WeakRef/GC regression suite
 
-### Physics Simulation Approach
+No Playwright fuzz suite; `npm run lint && npm run check && npm run build` is the CI gate.
 
-Integration uses a fixed timestep with an accumulator. State history is recorded into `LadybugStateRecord[]` with culled history and emitters for history add/remove events.
+## Multi-screen simulations
 
-Constants and keyboard bindings live in `LadyBugConstants.ts`.
-
-## View Components
-
-### LadyBugScreenView as Coordinator
-
-The screen view lays out the play area, right-side panels, and bottom seek/playback controls.
-
-Specialized view classes handle specific visualization aspects:
-
-1. **LadybugNode**: Draggable ladybug sprite in the play area
-2. **LadybugVectorsNode**: Velocity and acceleration vector arrows
-3. **LadybugTraceNode**: Motion trace (line, dots, or off)
-4. **RemoteControlPanel**: Position / velocity / acceleration remote-control pad (arrow drag)
-5. **VectorsControlPanel**: Vector visibility toggles, motion-preset radio buttons, and trace-mode selection
-6. **PlaybackControls** and **SeekBar**: Record/playback and timeline scrubbing
-
-### Color Scheme
-
-Colors are defined in `LadyBugColors.ts`. Views should reference `ProfileColorProperty` instances rather than hardcoded values.
-
-### Performance Optimizations
-
-- Trace rendering respects the selected trace mode to limit drawn geometry
-- History records are culled to bound memory use during long recordings
-
-Note that no dispose functions have been used, which should be addressed.
+This sim is single-screen. If it ever grows screens, see `doc/multi-screen.md` for the fleet
+pattern.
