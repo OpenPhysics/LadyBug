@@ -9,7 +9,7 @@
 import { Multilink, Property } from "scenerystack/axon";
 import { Bounds2, clamp, Vector2 } from "scenerystack/dot";
 import { Shape } from "scenerystack/kite";
-import { Circle, DragListener, Node, Rectangle, Text, VBox } from "scenerystack/scenery";
+import { Circle, DragListener, KeyboardDragListener, Node, Rectangle, Text, VBox } from "scenerystack/scenery";
 import { ArrowNode, PhetFont } from "scenerystack/scenery-phet";
 import { Panel, RectangularRadioButtonGroup } from "scenerystack/sun";
 import { StringManager } from "../../i18n/StringManager.js";
@@ -195,30 +195,48 @@ export default class RemoteControlPanel extends Panel {
       }
     };
 
+    const beginRemoteDrag = (): void => {
+      isDragging = true;
+      model.recordingProperty.value = true;
+      model.motionTypeProperty.value = MotionType.MANUAL;
+      model.updateModeProperty.value = selectedModeProperty.value;
+      model.play();
+      if (selectedModeProperty.value === UpdateMode.POSITION) {
+        model.startSampling();
+      }
+    };
+    const endRemoteDrag = (): void => {
+      if (selectedModeProperty.value === UpdateMode.POSITION) {
+        model.stopSampling();
+      }
+      isDragging = false;
+    };
     knob.addInputListener(
       new DragListener({
-        start: () => {
-          isDragging = true;
-          model.recordingProperty.value = true;
-          model.motionTypeProperty.value = MotionType.MANUAL;
-          model.updateModeProperty.value = selectedModeProperty.value;
-          model.play();
-          if (selectedModeProperty.value === UpdateMode.POSITION) {
-            model.startSampling();
-          }
-        },
+        start: beginRemoteDrag,
         drag: (event) => {
           const local = padLayer.globalToLocalPoint(event.pointer.point);
           const tip = new Vector2(clamp(local.x, -HALF, HALF), clamp(local.y, -HALF, HALF));
           setTip(tip);
           apply(tip);
         },
-        end: () => {
-          if (selectedModeProperty.value === UpdateMode.POSITION) {
-            model.stopSampling();
-          }
-          isDragging = false;
+        end: endRemoteDrag,
+      }),
+    );
+    knob.addInputListener(
+      new KeyboardDragListener({
+        dragSpeed: 120,
+        shiftDragSpeed: 40,
+        start: beginRemoteDrag,
+        drag: (_event, listener) => {
+          const tip = new Vector2(
+            clamp(knob.centerX + listener.modelDelta.x, -HALF, HALF),
+            clamp(knob.centerY + listener.modelDelta.y, -HALF, HALF),
+          );
+          setTip(tip);
+          apply(tip);
         },
+        end: endRemoteDrag,
       }),
     );
 

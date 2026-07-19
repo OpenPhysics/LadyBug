@@ -6,7 +6,7 @@
  * current playback time.
  */
 
-import { DragListener, Node, Rectangle } from "scenerystack/scenery";
+import { DragListener, KeyboardDragListener, Node, Rectangle } from "scenerystack/scenery";
 import { StringManager } from "../../i18n/StringManager.js";
 import LadyBugColors from "../../LadyBugColors.js";
 import type { LadyBugModel } from "../model/LadyBugModel.js";
@@ -103,6 +103,17 @@ export default class SeekBar extends Node {
       new DragListener({
         press: (event) => seekToLocalX(this.globalToLocalPoint(event.pointer.point).x),
         drag: (event) => seekToLocalX(this.globalToLocalPoint(event.pointer.point).x),
+      }),
+    );
+    // Arrow keys scrub the timeline (left/right); Shift for finer steps.
+    this.addInputListener(
+      new KeyboardDragListener({
+        keyboardDragDirection: "leftRight",
+        dragDelta: 8,
+        shiftDragDelta: 2,
+        drag: (_event, listener) => {
+          seekToLocalX(handle.centerX + listener.modelDelta.x);
+        },
       }),
     );
   }
