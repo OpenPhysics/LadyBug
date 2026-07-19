@@ -9,7 +9,7 @@
  */
 
 import { type Bounds2, Vector2 } from "scenerystack/dot";
-import LadyBugConstants from "./LadyBugConstants.js";
+import LadyBugConstants from "../../LadyBugConstants.js";
 import type Ladybug from "./Ladybug.js";
 import { MotionType } from "./MotionType.js";
 

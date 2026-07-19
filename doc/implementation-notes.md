@@ -55,7 +55,7 @@ src/
   stored state). Auto-stop at `MAX_RECORDING_TIME` (20 s).
 - **History culling.** Consecutive identical positions are omitted from `culledStateHistory` (for
   the trace) but kept in the full `stateHistory` (for derivative estimation during recording).
-- **Nested constants.** Physics constants live in `src/lady-bug/model/LadyBugConstants.ts` (fleet
+- **Nested constants.** Physics constants live in `src/LadyBugConstants.ts` (fleet
   carve-out for PhET-port layout); colors in `LadyBugColors.ts`.
 
 ## View components

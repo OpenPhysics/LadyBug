@@ -14,7 +14,7 @@ import { ArrowNode, PhetFont } from "scenerystack/scenery-phet";
 import { Panel, RectangularRadioButtonGroup } from "scenerystack/sun";
 import { StringManager } from "../../i18n/StringManager.js";
 import LadyBugColors from "../../LadyBugColors.js";
-import LadyBugConstants from "../model/LadyBugConstants.js";
+import LadyBugConstants from "../../LadyBugConstants.js";
 import type { LadyBugModel } from "../model/LadyBugModel.js";
 import { MotionType } from "../model/MotionType.js";
 import { UpdateMode } from "../model/UpdateMode.js";

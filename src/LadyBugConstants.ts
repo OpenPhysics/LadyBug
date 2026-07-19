@@ -90,3 +90,6 @@ const LadyBugConstants = {
 } as const;
 
 export default LadyBugConstants;
+
+/** Corner radius shared by themed panels (px). */
+export const PANEL_CORNER_RADIUS = 5;

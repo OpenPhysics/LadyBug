@@ -12,7 +12,7 @@ import type { ModelViewTransform2 } from "scenerystack/phetcommon";
 import { CanvasNode } from "scenerystack/scenery";
 import { StringManager } from "../../i18n/StringManager.js";
 import LadyBugColors from "../../LadyBugColors.js";
-import LadyBugConstants from "../model/LadyBugConstants.js";
+import LadyBugConstants from "../../LadyBugConstants.js";
 import type { LadyBugModel } from "../model/LadyBugModel.js";
 
 // In "dots" mode only every Nth history sample is rendered; this keeps the dots

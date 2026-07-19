@@ -53,7 +53,7 @@ via `StringManager.getA11yStrings()`.
 
 ## Compliance carve-outs
 
-- **Nested constants:** `src/lady-bug/model/LadyBugConstants.ts` (screen-scoped PhET port layout; documented here instead of a root `LadyBugConstants.ts`).
+- **Nested constants:** `src/LadyBugConstants.ts` (screen-scoped PhET port layout; documented here instead of a root `LadyBugConstants.ts`).
 - **Hardcoded colors:** `rgba(0,0,0,0.4)` knob/handle strokes in `RemoteControlPanel.ts` / `SeekBar.ts` — decorative borders that must stay translucent on both color profiles; not theme tokens.
 
 ## Testing

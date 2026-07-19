@@ -10,10 +10,10 @@
 import { BooleanProperty, Emitter, NumberProperty, Property } from "scenerystack/axon";
 import { Bounds2, Vector2 } from "scenerystack/dot";
 import type { TModel } from "scenerystack/joist";
+import LadyBugConstants from "../../LadyBugConstants.js";
 import type { LadyBugPreferencesModel } from "../../preferences/LadyBugPreferencesModel.js";
 import ladyBugQueryParameters from "../../preferences/ladyBugQueryParameters.js";
 import { closestIndex } from "./binarySearch.js";
-import LadyBugConstants from "./LadyBugConstants.js";
 import Ladybug from "./Ladybug.js";
 import LadybugMover, { type MoverContext } from "./LadybugMover.js";
 import LadybugStateRecord from "./LadybugStateRecord.js";

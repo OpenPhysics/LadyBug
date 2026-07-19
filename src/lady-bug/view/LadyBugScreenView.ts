@@ -6,9 +6,10 @@ import { PhetFont, ResetAllButton } from "scenerystack/scenery-phet";
 import { ScreenView, type ScreenViewOptions } from "scenerystack/sim";
 import { TextPushButton } from "scenerystack/sun";
 import type { Tandem } from "scenerystack/tandem";
+import { FLAT_RESET_ALL_BUTTON_OPTIONS } from "../../common/LadyBugButtonOptions.js";
 import { StringManager } from "../../i18n/StringManager.js";
 import LadyBugColors from "../../LadyBugColors.js";
-import LadyBugConstants from "../model/LadyBugConstants.js";
+import LadyBugConstants from "../../LadyBugConstants.js";
 import type { LadyBugModel } from "../model/LadyBugModel.js";
 import { LadyBugScreenSummaryContent } from "./LadyBugScreenSummaryContent.js";
 import LadybugNode from "./LadybugNode.js";
@@ -90,6 +91,7 @@ export class LadyBugScreenView extends ScreenView {
     const seekBar = new SeekBar(model, usableWidth);
 
     const resetAllButton = new ResetAllButton({
+      ...FLAT_RESET_ALL_BUTTON_OPTIONS,
       listener: () => {
         this.interruptSubtreeInput();
         model.reset();
