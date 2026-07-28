@@ -8,7 +8,8 @@ import { describe, expect, it } from "vitest";
 import LadyBugConstants from "../src/LadyBugConstants.js";
 import SamplingMotionModel from "../src/lady-bug/model/SamplingMotionModel.js";
 
-const { SAMPLING_HALF_WINDOW, SAMPLING_NUM_AVERAGED } = LadyBugConstants;
+const SAMPLING_HALF_WINDOW: number = LadyBugConstants.SAMPLING_HALF_WINDOW;
+const SAMPLING_NUM_AVERAGED: number = LadyBugConstants.SAMPLING_NUM_AVERAGED;
 
 async function forceGC(earlyExitRef?: WeakRef<object>): Promise<void> {
   for (let i = 0; i < 15; i++) {
