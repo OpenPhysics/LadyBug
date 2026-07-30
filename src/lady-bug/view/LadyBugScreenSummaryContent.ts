@@ -7,7 +7,7 @@
  * speed, and the play/pause state).
  *
  * Follows the OpenPhysics accessibility convention; see the canonical
- * TemplateSingleSim/SimScreenSummaryContent.ts.
+ * SceneryStackTemplate/SimScreenSummaryContent.ts.
  */
 
 import { DerivedProperty } from "scenerystack/axon";
