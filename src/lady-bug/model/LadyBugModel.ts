@@ -7,7 +7,7 @@
  * the object pools are dropped (axon handles change notification).
  */
 
-import { BooleanProperty, Emitter, NumberProperty, Property } from "scenerystack/axon";
+import { BooleanProperty, Emitter, EnumerationProperty, NumberProperty, Property } from "scenerystack/axon";
 import { Bounds2, Vector2 } from "scenerystack/dot";
 import type { TModel } from "scenerystack/joist";
 import LadyBugConstants from "../../LadyBugConstants.js";
@@ -20,9 +20,8 @@ import LadybugStateRecord from "./LadybugStateRecord.js";
 import { MotionType } from "./MotionType.js";
 import { estimateDerivative, type TimeValue } from "./motionMath.js";
 import SamplingMotionModel from "./SamplingMotionModel.js";
+import { TraceMode } from "./TraceMode.js";
 import { UpdateMode } from "./UpdateMode.js";
-
-export type TraceMode = "line" | "dots" | "off";
 
 type PenPoint = { x: number; y: number };
 
@@ -38,7 +37,7 @@ export class LadyBugModel implements TModel, MoverContext {
   public readonly furthestRecordedTimeProperty = new NumberProperty(0);
   public readonly showVelocityProperty = new BooleanProperty(ladyBugQueryParameters.showVelocity);
   public readonly showAccelerationProperty = new BooleanProperty(ladyBugQueryParameters.showAcceleration);
-  public readonly traceModeProperty = new Property<TraceMode>("line");
+  public readonly traceModeProperty = new EnumerationProperty(TraceMode.LINE);
 
   // Fired when a state record is appended / when history is removed.
   public readonly historyAddedEmitter = new Emitter();

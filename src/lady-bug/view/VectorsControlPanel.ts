@@ -12,8 +12,9 @@ import { PhetFont } from "scenerystack/scenery-phet";
 import { AquaRadioButtonGroup, Panel, VerticalCheckboxGroup } from "scenerystack/sun";
 import { StringManager } from "../../i18n/StringManager.js";
 import LadyBugColors from "../../LadyBugColors.js";
-import type { LadyBugModel, TraceMode } from "../model/LadyBugModel.js";
+import type { LadyBugModel } from "../model/LadyBugModel.js";
 import { MotionType } from "../model/MotionType.js";
+import { TraceMode } from "../model/TraceMode.js";
 
 // Point size for section-title text (e.g. "Vectors", "Motion", "Trace").
 const TITLE_FONT_SIZE = 16;
@@ -92,9 +93,9 @@ export default class VectorsControlPanel extends Panel {
     const traceRadioGroup = new AquaRadioButtonGroup<TraceMode>(
       model.traceModeProperty,
       [
-        { value: "line", createNode: () => labelText(trace.lineStringProperty) },
-        { value: "dots", createNode: () => labelText(trace.dotsStringProperty) },
-        { value: "off", createNode: () => labelText(trace.offStringProperty) },
+        { value: TraceMode.LINE, createNode: () => labelText(trace.lineStringProperty) },
+        { value: TraceMode.DOTS, createNode: () => labelText(trace.dotsStringProperty) },
+        { value: TraceMode.OFF, createNode: () => labelText(trace.offStringProperty) },
       ],
       { spacing: RADIO_BUTTON_SPACING, radioButtonOptions, accessibleName: trace.titleStringProperty },
     );

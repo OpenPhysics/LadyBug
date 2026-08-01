@@ -14,6 +14,7 @@ import { StringManager } from "../../i18n/StringManager.js";
 import LadyBugColors from "../../LadyBugColors.js";
 import LadyBugConstants from "../../LadyBugConstants.js";
 import type { LadyBugModel } from "../model/LadyBugModel.js";
+import { TraceMode } from "../model/TraceMode.js";
 
 // In "dots" mode only every Nth history sample is rendered; this keeps the dots
 // visually sparse and reduces per-frame canvas work at high recording rates.
@@ -38,7 +39,8 @@ export default class LadybugTraceNode extends CanvasNode {
         a11y.trace.dotsHelpStringProperty,
         a11y.trace.offHelpStringProperty,
       ],
-      (mode, lineHelp, dotsHelp, offHelp) => (mode === "line" ? lineHelp : mode === "dots" ? dotsHelp : offHelp),
+      (mode, lineHelp, dotsHelp, offHelp) =>
+        mode === TraceMode.LINE ? lineHelp : mode === TraceMode.DOTS ? dotsHelp : offHelp,
     );
     super({
       canvasBounds,
@@ -55,7 +57,7 @@ export default class LadybugTraceNode extends CanvasNode {
     model.timeProperty.link(repaint);
     LadyBugColors.traceProperty.link(repaint);
     model.traceModeProperty.link((mode) => {
-      this.visible = mode !== "off";
+      this.visible = mode !== TraceMode.OFF;
       repaint();
     });
   }
@@ -72,7 +74,7 @@ export default class LadybugTraceNode extends CanvasNode {
 
   public override paintCanvas(context: CanvasRenderingContext2D): void {
     const mode = this.model.traceModeProperty.value;
-    if (mode === "off") {
+    if (mode === TraceMode.OFF) {
       return;
     }
 
@@ -84,7 +86,7 @@ export default class LadybugTraceNode extends CanvasNode {
     const colorCss = LadyBugColors.traceProperty.value.toCSS();
     const mvt = this.modelViewTransform;
 
-    if (mode === "dots") {
+    if (mode === TraceMode.DOTS) {
       context.fillStyle = colorCss;
       for (let i = 0; i < history.length; i += DOT_HISTORY_STRIDE) {
         const state = history[i];
