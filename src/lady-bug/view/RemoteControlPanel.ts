@@ -9,7 +9,7 @@
 import { Multilink, Property } from "scenerystack/axon";
 import { Bounds2, clamp, Vector2 } from "scenerystack/dot";
 import { Shape } from "scenerystack/kite";
-import { Circle, DragListener, KeyboardDragListener, Node, Rectangle, Text, VBox } from "scenerystack/scenery";
+import { Circle, Node, Rectangle, RichDragListener, Text, VBox } from "scenerystack/scenery";
 import { ArrowNode, PhetFont } from "scenerystack/scenery-phet";
 import { Panel, RectangularRadioButtonGroup } from "scenerystack/sun";
 import { StringManager } from "../../i18n/StringManager.js";
@@ -212,31 +212,31 @@ export default class RemoteControlPanel extends Panel {
       isDragging = false;
     };
     knob.addInputListener(
-      new DragListener({
-        start: beginRemoteDrag,
-        drag: (event) => {
-          const local = padLayer.globalToLocalPoint(event.pointer.point);
-          const tip = new Vector2(clamp(local.x, -HALF, HALF), clamp(local.y, -HALF, HALF));
-          setTip(tip);
-          apply(tip);
+      new RichDragListener({
+        dragListenerOptions: {
+          start: beginRemoteDrag,
+          drag: (event) => {
+            const local = padLayer.globalToLocalPoint(event.pointer.point);
+            const tip = new Vector2(clamp(local.x, -HALF, HALF), clamp(local.y, -HALF, HALF));
+            setTip(tip);
+            apply(tip);
+          },
+          end: endRemoteDrag,
         },
-        end: endRemoteDrag,
-      }),
-    );
-    knob.addInputListener(
-      new KeyboardDragListener({
-        dragSpeed: 120,
-        shiftDragSpeed: 40,
-        start: beginRemoteDrag,
-        drag: (_event, listener) => {
-          const tip = new Vector2(
-            clamp(knob.centerX + listener.modelDelta.x, -HALF, HALF),
-            clamp(knob.centerY + listener.modelDelta.y, -HALF, HALF),
-          );
-          setTip(tip);
-          apply(tip);
+        keyboardDragListenerOptions: {
+          dragSpeed: 120,
+          shiftDragSpeed: 40,
+          start: beginRemoteDrag,
+          drag: (_event, listener) => {
+            const tip = new Vector2(
+              clamp(knob.centerX + listener.modelDelta.x, -HALF, HALF),
+              clamp(knob.centerY + listener.modelDelta.y, -HALF, HALF),
+            );
+            setTip(tip);
+            apply(tip);
+          },
+          end: endRemoteDrag,
         },
-        end: endRemoteDrag,
       }),
     );
 

@@ -6,7 +6,7 @@
  * current playback time.
  */
 
-import { DragListener, KeyboardDragListener, Node, Rectangle } from "scenerystack/scenery";
+import { DragListener, Node, Rectangle, RichDragListener } from "scenerystack/scenery";
 import { StringManager } from "../../i18n/StringManager.js";
 import LadyBugColors from "../../LadyBugColors.js";
 import type { LadyBugModel } from "../model/LadyBugModel.js";
@@ -26,6 +26,10 @@ const HANDLE_CORNER_RADIUS = 3;
 
 // Semi-transparent border rendered around the seek handle for visual separation.
 const HANDLE_STROKE = "rgba(0,0,0,0.4)";
+
+// View-pixel step the timeline scrubs per arrow-key press; Shift is the fine step.
+const SEEK_KEY_DELTA = 8;
+const SEEK_KEY_SHIFT_DELTA = 2;
 
 export default class SeekBar extends Node {
   public constructor(model: LadyBugModel, width: number) {
@@ -94,26 +98,28 @@ export default class SeekBar extends Node {
       model.setTime((x / width) * max);
     };
 
-    handle.addInputListener(
-      new DragListener({
+    const seekListener = new RichDragListener({
+      dragListenerOptions: {
         drag: (event) => seekToLocalX(this.globalToLocalPoint(event.pointer.point).x),
-      }),
-    );
+      },
+      keyboardDragListenerOptions: {
+        keyboardDragDirection: "leftRight",
+        dragDelta: SEEK_KEY_DELTA,
+        shiftDragDelta: SEEK_KEY_SHIFT_DELTA,
+        drag: (_event, listener) => {
+          seekToLocalX(handle.centerX + listener.modelDelta.x);
+        },
+      },
+    });
+    // Pointer drag grabs the handle; the keyboard half goes on `this`, the focusable Node.
+    // hotkeyManager only activates hotkeys for listeners on Nodes in the focus trail, so a
+    // listener on the (non-focusable) handle would never see an arrow key.
+    handle.addInputListener(seekListener.dragListener);
+    this.addInputListener(seekListener.keyboardDragListener);
     track.addInputListener(
       new DragListener({
         press: (event) => seekToLocalX(this.globalToLocalPoint(event.pointer.point).x),
         drag: (event) => seekToLocalX(this.globalToLocalPoint(event.pointer.point).x),
-      }),
-    );
-    // Arrow keys scrub the timeline (left/right); Shift for finer steps.
-    this.addInputListener(
-      new KeyboardDragListener({
-        keyboardDragDirection: "leftRight",
-        dragDelta: 8,
-        shiftDragDelta: 2,
-        drag: (_event, listener) => {
-          seekToLocalX(handle.centerX + listener.modelDelta.x);
-        },
       }),
     );
   }
