@@ -25,21 +25,26 @@
  *   const panel = new LadyBugPanel(content, { fill: "transparent" });
  */
 
+import { type EmptySelfOptions, optionize } from "scenerystack/phet-core";
 import type { Node } from "scenerystack/scenery";
-import type { PanelOptions } from "scenerystack/sun";
-import { Panel } from "scenerystack/sun";
+import { Panel, type PanelOptions } from "scenerystack/sun";
 import LadyBugColors from "../LadyBugColors.js";
 import { PANEL_CORNER_RADIUS } from "../LadyBugConstants.js";
 
+export type LadyBugPanelOptions = PanelOptions;
+
 export class LadyBugPanel extends Panel {
-  public constructor(content: Node, providedOptions?: PanelOptions) {
-    super(content, {
-      fill: LadyBugColors.panelBackgroundColorProperty,
-      stroke: LadyBugColors.panelBorderColorProperty,
-      cornerRadius: PANEL_CORNER_RADIUS,
-      xMargin: 12,
-      yMargin: 10,
-      ...providedOptions,
-    });
+  public constructor(content: Node, providedOptions?: LadyBugPanelOptions) {
+    const options = optionize<LadyBugPanelOptions, EmptySelfOptions, PanelOptions>()(
+      {
+        fill: LadyBugColors.panelBackgroundColorProperty,
+        stroke: LadyBugColors.panelBorderColorProperty,
+        cornerRadius: PANEL_CORNER_RADIUS,
+        xMargin: 12,
+        yMargin: 10,
+      },
+      providedOptions,
+    );
+    super(content, options);
   }
 }

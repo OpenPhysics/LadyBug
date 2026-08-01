@@ -1,5 +1,6 @@
 import { DerivedProperty } from "scenerystack/axon";
 import { Vector2 } from "scenerystack/dot";
+import { type EmptySelfOptions, optionize } from "scenerystack/phet-core";
 import { ModelViewTransform2 } from "scenerystack/phetcommon";
 import { Node } from "scenerystack/scenery";
 import { PhetFont, ResetAllButton } from "scenerystack/scenery-phet";
@@ -41,7 +42,13 @@ export class LadyBugScreenView extends ScreenView {
   private readonly remoteControlPanel: RemoteControlPanel;
 
   public constructor(model: LadyBugModel, providedOptions: LadyBugScreenViewOptions) {
-    super({ ...providedOptions, screenSummaryContent: new LadyBugScreenSummaryContent(model) });
+    const options = optionize<LadyBugScreenViewOptions, EmptySelfOptions, ScreenViewOptions>()(
+      {
+        screenSummaryContent: new LadyBugScreenSummaryContent(model),
+      },
+      providedOptions,
+    );
+    super(options);
 
     const layoutBounds = this.layoutBounds;
 
