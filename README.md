@@ -1,5 +1,7 @@
 # Lady Bug
 
+[![CI](https://github.com/OpenPhysics/LadyBug/actions/workflows/ci.yml/badge.svg)](https://github.com/OpenPhysics/LadyBug/actions/workflows/ci.yml)
+
 A [SceneryStack](https://scenerystack.org/) port of the PhET *Ladybug Motion 2D* simulation. Explore 2D
 motion, position, velocity, and acceleration by dragging the ladybug or choosing automated motion paths.
 
