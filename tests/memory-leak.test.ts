@@ -11,14 +11,22 @@ import SamplingMotionModel from "../src/lady-bug/model/SamplingMotionModel.js";
 const SAMPLING_HALF_WINDOW: number = LadyBugConstants.SAMPLING_HALF_WINDOW;
 const SAMPLING_NUM_AVERAGED: number = LadyBugConstants.SAMPLING_NUM_AVERAGED;
 
-async function forceGC(earlyExitRef?: WeakRef<object>): Promise<void> {
+/**
+ * Force garbage collection with multiple passes. When `earlyExitRefs` is supplied
+ * the loop bails as soon as every referenced object is confirmed collected. The
+ * setTimeout(0) yield after a live deref() avoids the WeakRef macrotask-liveness pin.
+ * Without early-exit refs the loop always runs all passes, which on a slow `gc()`
+ * can exceed the Vitest testTimeout — always pass refs when you have them.
+ */
+async function forceGC(earlyExitRefs?: WeakRef<object> | readonly WeakRef<object>[]): Promise<void> {
+  const refs = earlyExitRefs === undefined ? [] : Array.isArray(earlyExitRefs) ? earlyExitRefs : [earlyExitRefs];
   for (let i = 0; i < 15; i++) {
     globalThis.gc?.();
     await new Promise<void>((r) => setTimeout(r, 50));
-    if (earlyExitRef !== undefined && earlyExitRef.deref() === undefined) {
+    if (refs.length > 0 && refs.every((ref) => ref.deref() === undefined)) {
       return;
     }
-    if (earlyExitRef !== undefined) {
+    if (refs.length > 0) {
       await new Promise<void>((r) => setTimeout(r, 0));
     }
   }
@@ -54,7 +62,7 @@ describe("Memory leak regression", () => {
     for (let i = 0; i < 10; i++) {
       refs.push(createAndDropSamplingModel());
     }
-    await forceGC();
+    await forceGC(refs);
     expect(refs.filter((r) => r.deref() !== undefined).length).toBe(0);
   });
 });
